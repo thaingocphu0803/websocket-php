@@ -10,7 +10,7 @@
 <body>
 	<h1>Login</h1>
 
-	<div>
+	<div id="form">
 		<div>
 			<label for="username">username</label>
 			<input id="username" name="username" type="text">
@@ -21,12 +21,13 @@
 			<input id="password" name="password	" type="text">
 		</div>
 
-		<button type="button">Login</button>
+		<button type="button" onclick="submit()">Login</button>
 
 	</div>
 
 	<a href="./register.php">Register</a>
 
+	<script src="../../public/js/login.js" defer></script>
 </body>
 
 </html>

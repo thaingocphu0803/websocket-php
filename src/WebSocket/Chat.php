@@ -8,18 +8,17 @@ use Ratchet\ConnectionInterface;
 require_once __DIR__ . '/../database/DB.php';
 
 class Chat implements MessageComponentInterface {
-    protected $conn;
-    protected $clients;
+    protected $db;
+    protected $clients; 
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
-        $this->conn = DB::getInstance();
+        $this->db = DB::getInstance();
     }
 
     public function onOpen(ConnectionInterface $conn) {
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
-
         echo "New connection! ({$conn->resourceId})\n";
     }
 

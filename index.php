@@ -1,33 +1,28 @@
 <?php
-require_once __DIR__ . '/src/controllers/AuthController.php';
+require_once __DIR__ . '/src/controllers/UserController.php';
 require_once __DIR__ . '/config.php';
 
 
-if (isset($_SERVER['HTTP_ORIGIN'])) {
-	$origin = $_SERVER['HTTP_ORIGIN'];
-
-	if ($origin === $allowed_http_origin || $origin === $allowed_https_origin) {
-		header("Access-Control-Allow-Origin: $origin");
-		header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-		header('Access-Control-Allow-Headers: Content-Type');
-	}
-}
+header("Access-Control-Allow-Origin: *");
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
 
 class Router
 {
-	public $auth;
+	public $user;
 	public $path;
 	public $param;
 	private static $instance = null;
 
 	public function __construct()
 	{
-		$this->auth = new AuthController();
+		$this->user = new UserController();
 		$this->setURL();
 	}
 
-	public static function getInstance(){
-		if(self::$instance === null){
+	public static function getInstance()
+	{
+		if (self::$instance === null) {
 			self::$instance = new Router();
 		}
 
@@ -43,8 +38,8 @@ class Router
 		$request_uri = trim($_SERVER['REQUEST_URI'], '/');
 		$request_uri = explode('/', $request_uri);
 
-		$this->path =  isset($request_uri[1]) ? $request_uri[1] : NULL;
-		$this->param =  isset($request_uri[2]) ? $request_uri[2] : NULL;
+		$this->path =  isset($request_uri[0]) ? $request_uri[0] : NULL;
+		$this->param =  isset($request_uri[1]) ? $request_uri[1] : NULL;
 	}
 }
 
@@ -55,13 +50,19 @@ $router = Router::getInstance();
 switch ($router->path) {
 		// auhenController
 	case null:
-		$router->auth->index();
+		$router->user->index();
 		break;
 	case 'login':
-		$router->auth->login();
+		$router->user->login();
+		break;
+	case 'register':
+		$router->user->register();
+		break;
+	case 'list':
+		$router->user->list();
 		break;
 	case 'logout':
-		$router->auth->logout();
+		$router->user->logout();
 		break;
 	default:
 		break;
