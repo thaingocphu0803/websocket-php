@@ -1,24 +1,35 @@
 <?php
 namespace MyApp;
 
-use DB;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use UserConnectionModel;
 
-require_once __DIR__ . '/../database/DB.php';
+require_once __DIR__ . '/../models/UserConnectionModel.php';
 
 class Chat implements MessageComponentInterface {
-    protected $db;
+    protected $userConnectionModel;
     protected $clients; 
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
-        $this->db = DB::getInstance();
+        $this->userConnectionModel = new UserConnectionModel();
     }
 
     public function onOpen(ConnectionInterface $conn) {
+
+        // parse_str($conn->httpRequest->getUri()->getQuery(), $param);
+
         // Store the new connection to send messages to later
         $this->clients->attach($conn);
+
+        // $username = $param['username'];
+        // $connection_id = $conn->resourceId;
+
+        // $result = $this->userConnectionModel->save_user_connection($username, $connection_id, 1);
+
+        // if(!$result) die;
+         
         echo "New connection! ({$conn->resourceId})\n";
     }
 
@@ -28,6 +39,8 @@ class Chat implements MessageComponentInterface {
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
 
         foreach ($this->clients as $client) {
+
+
             if ($from !== $client) {
                 // The sender is not the receiver, send to each client connected
                 $client->send($msg);

@@ -1,4 +1,11 @@
-(async()=>{
+
+const renderList = () => {
+	return `
+		<div id="list_chat"></div>
+	`
+};
+
+const listApi= async()=>{
 	const response  = await fetch ('/list', {
 		method:'post'
 	})
@@ -15,9 +22,10 @@
 		`
 	});
 
-})();
+};
 
 
 const toBoxchat = (partnerId) =>{
 	location.href = `../../src/views/boxchat.php?partner=${partnerId}`;
 }
+

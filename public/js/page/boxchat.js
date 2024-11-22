@@ -1,14 +1,16 @@
-
-
-
-const socket = new WebSocket('ws://localhost:9000');
+const renderBoxChat = () => {
+	return `
+		<div id="message_box"></div>
+		<input type="text" id="message"></input>
+		<button type="button" onclick="sendMessage()">send</button>
+	`
+}
 
 const getPartnerId = () => {
 	const urlParams = new URLSearchParams(window.location.search);
 	const partner = urlParams.get('partner');
 	return partner
 }
-
 
 socket.onopen =  () => {
 	console.log('WebSocket đã mở.');

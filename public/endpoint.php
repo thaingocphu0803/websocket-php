@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/src/controllers/UserController.php';
-require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/../src/controllers/UserController.php';
+require_once __DIR__ . '/../config.php';
 
 
 header("Access-Control-Allow-Origin: *");
@@ -36,27 +36,27 @@ class Router
 			die('ERROR: Cannot find URL');
 		}
 		$request_uri = trim($_SERVER['REQUEST_URI'], '/');
-		$request_uri = explode('/', $request_uri);
 
-		$this->path =  isset($request_uri[0]) ? $request_uri[0] : NULL;
-		$this->param =  isset($request_uri[1]) ? $request_uri[1] : NULL;
+		$end_point = str_replace('public/endpoint.php/', '', $request_uri);
+
+		$this->path =  isset($end_point) ? strtolower($end_point) : NULL;
 	}
 }
 
-$router = Router::getInstance();
 
+$router = Router::getInstance();
 
 //check request URL to call subtable function
 switch ($router->path) {
 		// auhenController
-	case null:
-		$router->user->index();
-		break;
 	case 'login':
 		$router->user->login();
 		break;
 	case 'register':
 		$router->user->register();
+		break;
+	case 'check-login':
+		$router->user->check_login();
 		break;
 	case 'list':
 		$router->user->list();

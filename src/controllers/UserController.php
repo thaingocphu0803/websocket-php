@@ -83,6 +83,10 @@ class UserController {
 		}
 	}
 
+	public function check_login(){
+		
+	}
+
 
 	public function logout(){
 

@@ -1,9 +1,10 @@
+# turn on mod_rewrite
 RewriteEngine On
 
-#apply for all folder applycation
+# turn of index directory listing
 Options -Indexes
 
-# if application could not find file or folder, all request is redirected to  index.php
+# reidirect all request to index.php if file or folder have not existed public/index.php
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php [QSA,L]
+RewriteRule ^ public/index.php [QSA,L]
