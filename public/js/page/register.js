@@ -35,7 +35,7 @@ const register = async () => {
 		password: input.password
 	}
 
-	const response = await  fetch(`/public/${endpoint}/register`, {
+	const response = await  fetch(`/${endpoint}/register`, {
 		method: 'post',
 		body: JSON.stringify(formData)
 	})

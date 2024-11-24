@@ -1,9 +1,21 @@
 const renderBoxChat = () => {
 	return `
+		<button type="button" onclick="logout()">logout</butto>
 		<div id="message_box"></div>
 		<input type="text" id="message"></input>
 		<button type="button" onclick="sendMessage()">send</button>
 	`
+}
+
+const logout = async () => {
+	const response = await fetch(`/${endpoint}/logout`, {
+		method: 'post'
+	});
+	const data = await response.json();
+	if(data && !data.isLogin){
+		Navigate('/login');
+		return
+	}
 }
 
 const getPartnerId = () => {

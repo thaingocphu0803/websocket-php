@@ -37,7 +37,7 @@ class Router
 		}
 		$request_uri = trim($_SERVER['REQUEST_URI'], '/');
 
-		$end_point = str_replace('public/endpoint.php/', '', $request_uri);
+		$end_point = str_replace('endpoint.php/', '', $request_uri);
 
 		$this->path =  isset($end_point) ? strtolower($end_point) : NULL;
 	}

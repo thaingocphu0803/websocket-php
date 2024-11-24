@@ -13,10 +13,6 @@ class UserController {
 		$this->userModel = new UserModel();
 	}
 
-	public function index(){
-		header('Location: /src/views/login.php');
-	}
-
 	public function login(){
 		$input = json_decode(file_get_contents('php://input'), true);
 
@@ -84,7 +80,20 @@ class UserController {
 	}
 
 	public function check_login(){
-		
+		if(!isset($_SESSION['username'])){
+
+			echo json_encode([
+				'message' => 'user is logged out',
+				'isLogin' => false,
+			]);
+
+			exit;
+		}
+
+		echo json_encode([
+			'message' => 'user is logged in',
+			'isLogin' => true,
+		]);
 	}
 
 
@@ -93,6 +102,9 @@ class UserController {
 		session_unset();
 		session_destroy();
 
-		$this->index();
+		echo json_encode([
+			'message' => 'user is logged out',
+			'isLogin' => false,
+		]);
 	}
 }

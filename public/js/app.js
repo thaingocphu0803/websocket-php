@@ -7,7 +7,6 @@ const pathname = location.pathname.toLowerCase();
 const socket = new WebSocket(`ws://localhost:9000`);
 
 
-
 console.log('hello',pathname);
 
 //using to get to todo detail on edit.js
@@ -15,11 +14,12 @@ let todoId = null;
 let todoStatus = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
-	const response = await fetchAPI(`/${endpoint}/check-authen-api`, 'post');
-
-	console.log("hello", response.data.isLogin);
-
-	if(!response.data.isLogin){
+	
+	const response = await fetch(`/${endpoint}/check-login`, {
+		method: 'post'
+	});
+	const data = await response.json();
+	if(data && !data.isLogin){
 		Navigate('/login');
 		return
 	}

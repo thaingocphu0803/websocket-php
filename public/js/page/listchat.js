@@ -1,12 +1,24 @@
 
 const renderList = () => {
 	return `
+		<button type="button" onclick="logout()">logout</button>
 		<div id="list_chat"></div>
 	`
 };
 
+// const logout = async () => {
+// 	const response = await fetch(`/${endpoint}/logout`, {
+// 		method: 'post'
+// 	});
+// 	const data = await response.json();
+// 	if(data && !data.isLogin){
+// 		Navigate('/login');
+// 		return
+// 	}
+// }
+
 const listApi= async()=>{
-	const response  = await fetch ('/list', {
+	const response  = await fetch (`/${endpoint}/list`, {
 		method:'post'
 	})
 
@@ -26,6 +38,6 @@ const listApi= async()=>{
 
 
 const toBoxchat = (partnerId) =>{
-	location.href = `../../src/views/boxchat.php?partner=${partnerId}`;
+	Navigate('/box-chat');
 }
 

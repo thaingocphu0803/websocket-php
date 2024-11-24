@@ -14,14 +14,14 @@ const renderLogin = () => {
 				<input id="password" name="password	" type="text">
 			</div>
 
-			<button type="button" onclick="submit()">Login</button>
+			<button type="button" onclick="login()">Login</button>
 		</div>
 
 		<a href="#" onclick="toRegister()">Register</a>
 	`
 }
 
-const submit = async () => {
+const login = async () => {
 	const input = {
 		username : document.getElementById('username').value,
 		password : document.getElementById('password').value,
@@ -32,7 +32,7 @@ const submit = async () => {
 		password: input.password
 	}
 
-	const response = await  fetch(`/public/${endpoint}/login`, {
+	const response = await  fetch(`/${endpoint}/login`, {
 		method: 'post',
 		body: JSON.stringify(formData)
 	})
