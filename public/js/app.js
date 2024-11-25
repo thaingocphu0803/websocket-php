@@ -6,6 +6,9 @@ const pathname = location.pathname.toLowerCase();
 //using to get to todo detail on edit.js
 let todoId = null;
 let todoStatus = null;
+//generate socket connection
+const socket = new WebSocket(`ws://localhost:9000`);
+
 
 document.addEventListener("DOMContentLoaded", async () => {
 	
@@ -18,7 +21,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 		return
 	}
 	Navigate(pathname);
-	openSocket();
 });
 
 // listen event when user back or forward

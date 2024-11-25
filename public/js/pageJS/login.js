@@ -21,8 +21,7 @@ const login = async () => {
 		return;
 	};
 	Navigate('/listchat');
-	openSocket();
-}
+	}
 
 const toRegister = () => {
 	Navigate('/register');

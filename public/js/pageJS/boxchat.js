@@ -5,7 +5,7 @@ const sendMessage = () => {
 	const message = document.getElementById("message").value;
 	document.getElementById("message_box").innerHTML += `<p style="color:red"> Me: ${message}</p>`
 
-	window.socket ?? socket.send(message);
+	socket.send(message);
 }
 if(window.socket){
 
