@@ -1,13 +1,7 @@
 "use strict";
 
-const app = document.getElementById("app");
 const endpoint = "endpoint.php";
 const pathname = location.pathname.toLowerCase();
-
-const socket = new WebSocket(`ws://localhost:9000`);
-
-
-console.log('hello',pathname);
 
 //using to get to todo detail on edit.js
 let todoId = null;
@@ -23,8 +17,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 		Navigate('/login');
 		return
 	}
-
 	Navigate(pathname);
+	openSocket();
 });
 
 // listen event when user back or forward
@@ -33,7 +27,7 @@ window.addEventListener("popstate", function (event) {
 });
 
 // config navigate
-const Navigate = (pathname) => {
+const Navigate = async (pathname) => {
 
 	/*
 	  param 1: path
@@ -42,38 +36,31 @@ const Navigate = (pathname) => {
 	window.history.pushState({ path: pathname }, "", pathname);
 
 	const param = pathname.split("/");
+	
+	const path = param[1] ? param[1] : 'login';
+
+	const id = param[2] ? param[2] : null;
+
+	const response = await fetch(`/page/${path}.php`);
+
+	const app = document.getElementById('app');
 
 
-		switch (param[1]) {
-			case "":
-			case "login":
-				app.innerHTML = renderLogin();
-
-				document.getElementById('form').addEventListener('keydown', async(event) => {
-					if(event.key === "Enter"){
-						await submit();
-					}
-				})
-
-				break;
-			case "register":
-				app.innerHTML = renderRegister();
-				document.getElementById('form').addEventListener('keydown', async(event) => {
-					if(event.key === "Enter"){
-						await submit();
-					}
-				})
-				break;
-			case "list":
-				app.innerHTML = renderList();
-				listApi();
-				break;
-			case "box-chat":
-				app.innerHTML = renderBoxChat();
-				break;
-			default:
-				window.history.pushState({}, "404", "not-found");
-				app.innerHTML = renderNotFound();
-				break;
-		}
+	switch(path){
+		case 'login':
+			app.innerHTML = await response.text();
+			break;
+		case 'register':
+			app.innerHTML = await response.text();
+			break;
+		case 'listchat':
+			app.innerHTML = await response.text();
+			listApi();
+			break;
+		case 'boxchat':
+			app.innerHTML = await response.text();
+			getPartnerId(id);
+		default:
+			break;
+	}
 };

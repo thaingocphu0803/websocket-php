@@ -1,26 +1,3 @@
-
-const renderLogin = () => {
-	return `
-		<h1>Login</h1>
-
-		<div id="form">
-			<div>
-				<label for="username">username</label>
-				<input id="username" name="username" type="text">
-			</div>
-
-			<div>
-				<label for="password">password</label>
-				<input id="password" name="password	" type="text">
-			</div>
-
-			<button type="button" onclick="login()">Login</button>
-		</div>
-
-		<a href="#" onclick="toRegister()">Register</a>
-	`
-}
-
 const login = async () => {
 	const input = {
 		username : document.getElementById('username').value,
@@ -43,10 +20,18 @@ const login = async () => {
 		alert (data.message);
 		return;
 	};
-
-	Navigate('/list')
+	Navigate('/listchat');
+	openSocket();
 }
 
 const toRegister = () => {
 	Navigate('/register');
+}
+
+
+
+const submitLogin = (event) =>{
+	if(event.key === 'Enter'){	
+		login()
+	}
 }
