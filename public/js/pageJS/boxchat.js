@@ -1,13 +1,17 @@
-const getPartnerId = (partnerId) => {
-	return partnerId;
-};
+
 const sendMessage = () => {
-	const message = document.getElementById("message").value;
+	const text = document.getElementById("message").value;
+	const message = {
+		type: 'sendMessage',
+		to: userId,
+		message: text
+	}
+	socket.send(JSON.stringify(message));
+
 	document.getElementById(
 		"message_box"
-	).innerHTML += `<p style="color:red"> Me: ${message}</p>`;
+	).innerHTML += `<p style="color:red"> Me: ${text}</p>`;
 
-	socket.send(message);
 };
 
 socket.onmessage = (event) => {

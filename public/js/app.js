@@ -6,6 +6,7 @@ const pathname = location.pathname.toLowerCase();
 //using to get to todo detail on edit.js
 let todoId = null;
 let todoStatus = null;
+let userId = null
 //generate socket connection
 
 const socket = new WebSocket(`ws://localhost:9000`);
@@ -39,10 +40,10 @@ const Navigate = async (pathname) => {
 	window.history.pushState({ path: pathname }, "", pathname);
 
 	const param = pathname.split("/");
-	
+
 	const path = param[1] ? param[1] : 'login';
 
-	const id = param[2] ? param[2] : null;
+	userId = param[2] ? param[2] : null;
 
 	const response = await fetch(`/page/${path}.php`);
 
@@ -62,7 +63,6 @@ const Navigate = async (pathname) => {
 			break;
 		case 'boxchat':
 			app.innerHTML = await response.text();
-			getPartnerId(id);
 		default:
 			break;
 	}

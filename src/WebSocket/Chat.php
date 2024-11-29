@@ -9,7 +9,8 @@ require_once __DIR__ . '/../models/UserConnectionModel.php';
 
 class Chat implements MessageComponentInterface {
     protected $userConnectionModel;
-    protected $clients; 
+    protected $clients;
+    protected $onlineConnection = [];
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
@@ -18,32 +19,33 @@ class Chat implements MessageComponentInterface {
 
     public function onOpen(ConnectionInterface $conn) {
 
-        // parse_str($conn->httpRequest->getUri()->getQuery(), $param);
-
-        // Store the new connection to send messages to later
         $this->clients->attach($conn);
-
-        // $username = $param['username'];
-        // $connection_id = $conn->resourceId;
-
-        // $result = $this->userConnectionModel->save_user_connection($username, $connection_id, 1);
-
-        // if(!$result) die;
          
         echo "New connection! ({$conn->resourceId})\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
-        $numRecv = count($this->clients) - 1;
-        echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
-            , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
+        $ojbMessage = json_decode($msg, true);
 
-        foreach ($this->clients as $client) {
+        $connection_id = $from->resourceId;
 
+        if($ojbMessage["type"] == 'userConnect'){
+            $username = $ojbMessage["userId"] ?? null ;
+            $result = $this->userConnectionModel->save_user_connection($username, $connection_id, 1);
+            if(!$result) die;
 
-            if ($from !== $client) {
-                // The sender is not the receiver, send to each client connected
-                $client->send($msg);
+            $this->onlineConnection[$connection_id] = $username;
+
+        }elseif ($ojbMessage["type"] == 'userDisconnect'){
+            $onlineUser = $this->onlineConnection[$connection_id];
+            $this->userConnectionModel->save_user_connection($onlineUser, $connection_id, 0);
+        }elseif ($ojbMessage["type"] == 'sendMessage'){
+            $toUser = $ojbMessage['to'];
+            $result = $this->userConnectionModel->get_user_connection($toUser);
+            foreach ($this->clients as $client){
+                if($client->resourceId === $result['connection_id']){
+                    $client->send($ojbMessage['message']);
+                }
             }
         }
     }

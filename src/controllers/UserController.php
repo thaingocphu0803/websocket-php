@@ -28,6 +28,7 @@ class UserController {
 			echo json_encode([
 				'message' => 'loggin successfull',
 				'isLogin' => true,
+				'userId' => $user['username']
 			]);
 		}else{
 			echo json_encode([

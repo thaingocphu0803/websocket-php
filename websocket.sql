@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : db
+ Source Server         : mysql_db
  Source Server Type    : MySQL
  Source Server Version : 100432 (10.4.32-MariaDB)
  Source Host           : localhost:3306
@@ -11,7 +11,7 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 25/11/2024 08:08:36
+ Date: 29/11/2024 11:48:45
 */
 
 SET NAMES utf8mb4;
@@ -47,7 +47,7 @@ CREATE TABLE `users`  (
   `pssw` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of users
@@ -56,5 +56,6 @@ INSERT INTO `users` VALUES (1, 'phu123', 'phu123');
 INSERT INTO `users` VALUES (2, 'phu111', 'phu111');
 INSERT INTO `users` VALUES (3, 'phu122', 'phu122');
 INSERT INTO `users` VALUES (4, 'phu222', 'phu222');
+INSERT INTO `users` VALUES (5, 'phu124', 'phu124');
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -20,6 +20,13 @@ const login = async () => {
 		alert (data.message);
 		return;
 	};
+	message = {
+		type: 'userConnect',
+		userId: data.userId
+	}
+
+	socket.send(JSON.stringify(message))
+
 	Navigate('/listchat');
 	}
 
