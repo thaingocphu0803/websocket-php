@@ -20,9 +20,10 @@ const login = async () => {
 		alert (data.message);
 		return;
 	};
-	message = {
+
+	const message = {
 		type: 'userConnect',
-		userId: data.userId
+		userConnect: data.userId
 	}
 
 	socket.send(JSON.stringify(message))

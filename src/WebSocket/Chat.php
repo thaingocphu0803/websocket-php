@@ -26,25 +26,33 @@ class Chat implements MessageComponentInterface {
 
     public function onMessage(ConnectionInterface $from, $msg) {
         $ojbMessage = json_decode($msg, true);
-
         $connection_id = $from->resourceId;
 
         if($ojbMessage["type"] == 'userConnect'){
-            $username = $ojbMessage["userId"] ?? null ;
-            $result = $this->userConnectionModel->save_user_connection($username, $connection_id, 1);
+            $userConnect = $ojbMessage["userConnect"] ?? null ;
+            $result = $this->userConnectionModel->save_user_connection($userConnect, $connection_id, 1);
             if(!$result) die;
 
-            $this->onlineConnection[$connection_id] = $username;
+            $this->onlineConnection[$connection_id] = $userConnect;
 
         }elseif ($ojbMessage["type"] == 'userDisconnect'){
             $onlineUser = $this->onlineConnection[$connection_id];
             $this->userConnectionModel->save_user_connection($onlineUser, $connection_id, 0);
         }elseif ($ojbMessage["type"] == 'sendMessage'){
+            
             $toUser = $ojbMessage['to'];
-            $result = $this->userConnectionModel->get_user_connection($toUser);
+            $receiver = $this->userConnectionModel->get_user_connection($toUser);
+
             foreach ($this->clients as $client){
-                if($client->resourceId === $result['connection_id']){
-                    $client->send($ojbMessage['message']);
+                if($client->resourceId === $receiver['connection_id']){
+
+                    $sendMessage = [
+                        'message' => $ojbMessage['message'],
+                        'sender' => $ojbMessage['from'],
+                        'receiver' => $ojbMessage['to']
+                    ];
+
+                    $client->send(json_encode($sendMessage));
                 }
             }
         }

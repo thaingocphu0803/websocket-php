@@ -1,4 +1,6 @@
-const listApi= async()=>{
+
+
+const listApi= async()=>{	
 	const response  = await fetch (`/${endpoint}/list`, {
 		method:'post'
 	})
@@ -17,7 +19,10 @@ const listApi= async()=>{
 
 };
 
-const toBoxchat = (partnerId) =>{	
-	Navigate(`/boxchat/${partnerId}`);
+const toBoxchat = (receiver) =>{	
+	const sender = document.getElementById("sender").textContent;
+	currentRoom = [sender, receiver].sort().join('_');
+
+	Navigate(`/boxchat/${receiver}`);
 }
 

@@ -5,7 +5,7 @@ const logout = async () => {
 	const data = await response.json();
 	if(data && !data.isLogin){
 
-		message = {
+		const message = {
 			type: 'userDisconnect',
 		}
 
@@ -15,3 +15,12 @@ const logout = async () => {
 		return
 	}
 }
+
+//socket disconect
+socket.onclose = () => {
+	const message = {
+		type: 'userDisconnect',
+	}
+
+	socket.send(JSON.stringify(message));
+};

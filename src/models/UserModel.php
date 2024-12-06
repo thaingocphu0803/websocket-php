@@ -19,7 +19,7 @@ class UserModel {
 
 		if(!$user) return false;
 
-		if($password && $user['pssw'] !== $password) return false;
+		if(!$password || $user['pssw'] !== $password) return false;
 
 		return $user;
 	}

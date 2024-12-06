@@ -94,6 +94,7 @@ class UserController {
 		echo json_encode([
 			'message' => 'user is logged in',
 			'isLogin' => true,
+			'userId' => $_SESSION['username']
 		]);
 	}
 
