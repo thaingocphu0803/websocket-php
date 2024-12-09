@@ -2,7 +2,6 @@
 
 const endpoint = "endpoint.php";
 const pathname = location.pathname.toLowerCase();
-// const userId = document.getElementById("sender").textContent ?? null;
 
 //using to get to todo detail on edit.js
 let todoId = null;
@@ -13,19 +12,6 @@ let currentRoom = null;
 
 const socket = new WebSocket(`ws://localhost:9000`);
 
-socket.onopen = () => {
-	if (userId) {
-		console.log("oke", socket.readyState);
-
-		const message = {
-			type: "userConnect",
-			userConnect: sender,
-		};
-
-		socket.send(JSON.stringify(message));
-	}
-};
-
 document.addEventListener("DOMContentLoaded", async () => {
 	const response = await fetch(`/${endpoint}/check-login`, {
 		method: "post",
@@ -34,9 +20,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 	if (data && !data.isLogin) {
 		Navigate("/login");
 		return;
+	}else{
+		socket.onopen = () => {
+			if (data.userId) {		
+				const message = {
+					type: "userConnect",
+					userConnect: data.userId,
+				};
+		
+				socket.send(JSON.stringify(message));
+			}
+		};
+	
+		Navigate(pathname);
 	}
 
-	Navigate(pathname);
 });
 
 // listen event when user back or forward

@@ -10,7 +10,7 @@ require_once __DIR__ . '/../models/UserConnectionModel.php';
 class Chat implements MessageComponentInterface {
     protected $userConnectionModel;
     protected $clients;
-    protected $onlineConnection = [];
+    // protected $onlineConnection = [];
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
@@ -33,10 +33,10 @@ class Chat implements MessageComponentInterface {
             $result = $this->userConnectionModel->save_user_connection($userConnect, $connection_id, 1);
             if(!$result) die;
 
-            $this->onlineConnection[$connection_id] = $userConnect;
+            // $this->onlineConnection[$connection_id] = $userConnect;
 
         }elseif ($ojbMessage["type"] == 'userDisconnect'){
-            $onlineUser = $this->onlineConnection[$connection_id];
+            $onlineUser = $ojbMessage['userDisconect'];
             $this->userConnectionModel->save_user_connection($onlineUser, $connection_id, 0);
         }elseif ($ojbMessage["type"] == 'sendMessage'){
             

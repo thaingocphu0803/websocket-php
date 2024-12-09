@@ -1,4 +1,6 @@
 const logout = async () => {
+	const sender = document.getElementById('sender').textContent;
+
 	const response = await fetch(`/${endpoint}/logout`, {
 		method: 'post'
 	});
@@ -7,6 +9,7 @@ const logout = async () => {
 
 		const message = {
 			type: 'userDisconnect',
+			userDisconect: sender
 		}
 
 		socket.send(JSON.stringify(message));
