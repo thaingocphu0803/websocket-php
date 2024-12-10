@@ -42,7 +42,7 @@ class Chat implements MessageComponentInterface {
             
             $toUser = $ojbMessage['to'];
             $receiver = $this->userConnectionModel->get_user_connection($toUser);
-
+            echo $receiver['connection_id'];
             foreach ($this->clients as $client){
                 if($client->resourceId === $receiver['connection_id']){
 

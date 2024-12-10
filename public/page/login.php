@@ -1,16 +1,16 @@
 <div id="form" onkeyup="submitLogin(event)">
-	<h1>Login</h1>
-	<div>
-		<label for="username">username</label>
+	<h1>LOGIN</h1>
+	<div class="from-input">
+		<label for="username">USERNAME</label>
 		<input id="username" name="username" type="text">
 	</div>
 
-	<div>
-		<label for="password">password</label>
-		<input id="password" name="password	" type="text">
+	<div class="from-input">
+		<label for="password">PASSWORD</label>
+		<input id="password" name="password" type="password">
 	</div>
 
-	<button type="button" onclick="login()">Login</button>
+	<button class="form-btn" type="button" onclick="login()">Login</button>
 
-	<a onclick="toRegister()">Register</a>
+	<a onclick="toRegister()">Create your account</a>
 </div>

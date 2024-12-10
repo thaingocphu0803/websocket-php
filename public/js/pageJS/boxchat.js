@@ -17,9 +17,14 @@ const sendMessage = () => {
 
 socket.onmessage = (event) => {
 
-	
+	const sender = document.getElementById("sender").textContent;
+	currentRoom = [sender, objMessage.receiver].sort().join('_')
+
 	const objMessage = JSON.parse(event.data);
 	keyRoom = [objMessage.sender, objMessage.receiver].sort().join('_')
+
+	console.log('keyroom', keyRoom); 
+	console.log('curentroom', currentRoom);
 
 	if(keyRoom !== currentRoom) return;
 

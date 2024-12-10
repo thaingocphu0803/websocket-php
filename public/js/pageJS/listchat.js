@@ -20,9 +20,6 @@ const listApi= async()=>{
 };
 
 const toBoxchat = (receiver) =>{	
-	const sender = document.getElementById("sender").textContent;
-	currentRoom = [sender, receiver].sort().join('_');
-
 	Navigate(`/boxchat/${receiver}`);
 }
 
