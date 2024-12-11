@@ -1,16 +1,19 @@
 <?php
 
 require_once __DIR__ . '/../models/UserModel.php';
+require_once __DIR__ . '/../helpers/ValidateHelper.php';
 
 class UserController {
 
 	private $userModel;
+	private $ValidateHelper;
 
 	public function __construct()
 	{
 		session_start();
 
 		$this->userModel = new UserModel();
+		$this->ValidateHelper = new ValidateHepler();
 	}
 
 	public function login(){
@@ -42,20 +45,21 @@ class UserController {
 	public function register(){
 		$input = json_decode(file_get_contents('php://input'), true);
 
-		$username = $input['username'];
-		$password = $input['password'];
+		$username = $this->ValidateHelper->clearInput($input['username']);
+		$password =  $this->ValidateHelper->clearInput($input['password']);
+		$fullname =  $this->ValidateHelper->clearInput($input['fullname']);
 
-		$result = $this->userModel->register_account($username, $password);
+		$result = $this->userModel->register_account($username, $password, $fullname);
 
 		if($result){			
 			echo json_encode([
 				'message' => 'register successfull',
-				'isRegister' => true,
+				'status' => true,
 			]);
 		}else{
 			echo json_encode([
-				'message' => 'user already exist',
-				'isRegister' => false,
+				'message' => 'User already exist',
+				'status' => false,
 			]);
 		}
 	}
@@ -74,7 +78,6 @@ class UserController {
 		}else{
 			echo json_encode([
 				'message' => 'get list fail',
-
 				'list' => null
 			]);
 		}

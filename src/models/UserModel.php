@@ -17,26 +17,33 @@ class UserModel {
 
 		$user = $this->db->fetch($stmt);
 
-		if(!$user) return false;
+		if(!isset($user['username'])) return false;
 
-		if(!$password || $user['pssw'] !== $password) return false;
+		if(isset($password) && $user['pssw'] !== $password) return false;
 
-		return $user;
+		return $user['username'];
 	}
 
-	public function register_account($username, $password){
+	public function register_account($username, $password, $fullname){
 
-		$check_user = $this->check_authen($username);
-		
-		if($check_user) return false;
+		try{
+			
+			$check_user = $this->check_authen($username);
 
-		$stmt = $this->db->query('INSERT INTO users(username, pssw) VALUES (:username, :pssw)', [
-			':username' => $username,
-			':pssw' => $password
-		]);
-
-		return $stmt->rowCount() > 0;
-
+			$hash_password = password_hash($password, PASSWORD_BCRYPT);
+			
+			if($check_user) return false;
+	
+			$stmt = $this->db->query('INSERT INTO users(username, pssw, fullname) VALUES (:username, :pssw, :fullname)', [
+				':username' => $username,
+				':pssw' => $hash_password,
+				':fullname' => $fullname
+			]);
+	
+			return $stmt->rowCount() > 0;
+		}catch(Exception $e){
+			echo $e->getMessage();
+		}
 	}
 
 	public function get_list_user($username){

@@ -1,4 +1,13 @@
-@import url(./login.css);
+:root{
+ --rgb-blue:  rgb(19, 143, 213 );
+ --rgb-silver: rgb(205, 222, 236);
+ --solid-1: 1px solid;
+ --solid-2: 2px solid;
+ --rgb-dark-red: rgb(192, 12, 6 );
+ --rgb-light-green: rgb(91, 238, 111 );
+ --rgb-dark-grey: rgb(70, 68, 71 );
+ --rgb-red: rgb(229, 32, 15);
+}
 
 #app{
 	width: 100%;
@@ -6,29 +15,60 @@
 	display: grid;
 	justify-content: center;
 	align-items: center;
-	background-image: linear-gradient(45deg, rgb(146, 166, 234), rgb(148, 237, 238 ));
+	background-image: url(../asset/background.png);
+	background-size: cover;
 }
 
-.from-input{
+.from-input, .check-box{
 	display: flex;
-	justify-items: stretch;
+	justify-self: stretch;
+	margin: 0 2rem;
 	gap: 16px;
-	align-items: center;
-	color: #ffffff;
 	font-weight: 800;
+	font-size: 16px;
+	align-items: center;
 }
 
 .form-btn{
 	padding: 10px 16px;
 	border-radius: 10px;
-	border: 1px solid black;
+	border: var(--solid-1) black;
 	font-size: 16px;
 	font-weight: 500;
 	background-color: aliceblue;
 }
 
-.form-btn:hover{
-	background-color: rgb(205, 222, 236);
-	border: 1px solid whitesmoke;
+.check-box:hover{
+	color: whitesmoke;
+}
 
+.form-btn:hover{
+	background-color: var(--rgb-silver);
+	color:  var(--rgb-blue);
+}
+
+.error {
+	font-size: 18px;
+	color: var(--rgb-dark-red);
+	font-weight: 800;
+	display: none;
+}
+
+.next-page{
+	display: flex;
+	justify-content: center;
+	gap: 0.5em;
+	align-items: center;
+}
+
+.next-page:hover{
+	color: whitesmoke;
+}
+.next-page:hover path{
+	fill: whitesmoke;
+}
+
+.input-invalid{
+	outline: var(--solid-1) var(--rgb-red) !important;
+	border:  var(--solid-1) var(--rgb-red) !important;
 }

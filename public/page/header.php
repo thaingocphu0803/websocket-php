@@ -6,5 +6,4 @@
 	}
 ?>
 
-
 <div id="sender"><?= $username?></div>

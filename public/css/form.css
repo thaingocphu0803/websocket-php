@@ -1,0 +1,64 @@
+#form_login, #form_register{
+	width: 400px;
+	height: 500px;
+	display: grid;
+	grid-auto-rows: 1fr;
+	justify-items: center;
+	align-items: center;
+	border-radius: 20px;
+	border: var(--solid-1) var(--rgb-dark-grey);
+	background-image: url(../asset/login-background.png);
+	background-size: cover;	
+	color: var(--rgb-dark-grey);
+}
+
+#username, #password, #confirm_pass, #first_name, #last_name {
+	padding: 10px;
+	border-radius: 10px;
+	border: var(--solid-1) whitesmoke;
+	outline: var(--solid-1)  whitesmoke;
+	width: 250px;
+
+}
+
+#remember{
+	height: 20px;
+	width: 20px;
+	appearance: none;
+	border:var(--solid-2) var(--rgb-dark-grey);
+    border-radius: 5px;
+    background-color: #ffffff;
+    cursor: pointer;
+    position: relative;
+}
+
+#remember:checked{
+	background-color: var(--rgb-light-green);
+	background-size: contain;
+	border: var(--solid-2) whitesmoke;
+
+}
+
+.check-box:hover #remember{
+	color: whitesmoke;
+	background-color: var(--rgb-light-green);
+	background-size: contain;
+	border: var(--solid-2) whitesmoke;
+}
+
+
+#username:focus, #password:focus, #confirm_pass:focus, #first_name:focus, #last_name:focus {
+	outline:var(--solid-2) var(--rgb-blue);
+
+}
+
+#full_name{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	gap: 1em
+}
+
+#first_name, #last_name{
+	width: 100px;
+}

@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet">
 	<link rel="stylesheet" href="./css/style.css">
+	<link rel="stylesheet" href="./css/form.css">
 	<title>Chat App</title>
 </head>
 <body>
@@ -17,8 +18,6 @@
 	<script src="/js/pageJS/boxchat.js" defer></script>
 	<script src="/js/pageJS/listchat.js" defer></script>
 	<script src="/js/pageJS/register.js" defer></script>
-
-
 
 </body>
 </html>	

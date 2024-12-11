@@ -7,7 +7,6 @@ const pathname = location.pathname.toLowerCase();
 let todoId = null;
 let todoStatus = null;
 let receiver = null;
-let currentRoom = null;
 //generate socket connection
 
 const socket = new WebSocket(`ws://localhost:9000`);

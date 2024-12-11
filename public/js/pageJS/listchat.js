@@ -19,7 +19,7 @@ const listApi= async()=>{
 
 };
 
-const toBoxchat = (receiver) =>{	
+const toBoxchat = (receiver) =>{
 	Navigate(`/boxchat/${receiver}`);
 }
 
