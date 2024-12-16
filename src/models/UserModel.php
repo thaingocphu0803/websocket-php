@@ -11,17 +11,17 @@ class UserModel {
 	}
 
 	public function check_authen($username, $password = null){
-		$stmt = $this->db->query('SELECT username, pssw FROM  users WHERE username = :username LIMIT 1',[
+		$stmt = $this->db->query('SELECT username, pssw, fullname FROM  users WHERE username = :username LIMIT 1',[
 			':username' => $username
 		]);
 
 		$user = $this->db->fetch($stmt);
 
-		if(!isset($user['username'])) return false;
+		if(!isset($user)) return false;
+		
+		if(isset($password) && !password_verify($password, $user['pssw'])) return false;
 
-		if(isset($password) && $user['pssw'] !== $password) return false;
-
-		return $user['username'];
+		return $user;
 	}
 
 	public function register_account($username, $password, $fullname){

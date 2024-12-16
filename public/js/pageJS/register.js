@@ -2,24 +2,24 @@ const register = async () => {
 	const input = {
 		username: document.getElementById("username"),
 		password: document.getElementById("password"),
-		confirmPass: document.getElementById("confirm_pass"),
-		fistname: document.getElementById("first_name"),
-		lastname: document.getElementById("last_name"),
+		confirmPass: document.getElementById("confirm_password"),
+		fistname: document.getElementById("firstname"),
+		lastname: document.getElementById("lastname"),
 	};
 
-	const fistName = handleName(input.fistname);
+	const firstName = handleName(input.fistname);
 	const lastName = handleName(input.lastname);
 
-	//validate
-	if(!validate(input)) return;
+	if(!validateRegister(input)) return;
 
 	const formData = {
 		username: input.username.value,
 		password: input.password.value,
-		fullname: `${fistName} ${lastName}`,
+		firstname: firstName,
+		lastname: lastName,
+		confirm_password: input.confirmPass.value
 	};
 
-	console.log(formData);
 
 	const response = await fetch(`/${endpoint}/register`, {
 		method: "post",
@@ -29,13 +29,25 @@ const register = async () => {
 	const data = await response.json();
 
 	if (!data.status) {
+		const invalidInput = document.getElementById(`${data.property}`) ?? null;
+
+		clearInvalidStyle()
 		setError(data.message)
+		
+		if(invalidInput){
+			handleInvalid(invalidInput);
+		}
 		return;
 	}
 
-	alert(data.message);
+	showSuccess(data.message);
+	clearError()
+	document.getElementById('form_register').style.alignSelf = 'start';
 
-	Navigate("/login");
+	setTimeout(()=> {
+		Navigate("/login");
+	},1000);
+
 };
 
 const submitRegister = (event) => {
@@ -48,7 +60,7 @@ const toLogin = () => {
 	Navigate("/login");
 };
 
-const validate = (input) => {
+const validateRegister = (input) => {
 	let message = null;
 
 	const RegExp = {
@@ -106,7 +118,7 @@ const validate = (input) => {
 		return setError(message);
 	} 
 	else if (input.password.value !== input.confirmPass.value) {
-		message = "An confirm password is not match";
+		message = "Confirm password is not matched";
 		handleInvalid(input.confirmPass);
 		return setError(message);
 	}
@@ -115,31 +127,9 @@ const validate = (input) => {
 
 };
 
-const setError = (message) => {
-	const error = document.getElementsByClassName("error")[0];
-
-	error.textContent = message;
-	error.style.display = "block";
-
-	return false;
-};
-
-const handleInvalid = (input) => {
-	input.classList.add("input-invalid");
-};
-
-const clearInvalidStyle = () => {
-	const invalidInput = document.getElementsByClassName("input-invalid");
-
-	Array.from(invalidInput).forEach((element) => {
-		element.classList.remove("input-invalid");
-	});
-};
-
 const handleName = (input) => {
 	const uppercaseName = input.value.charAt(0).toUpperCase() + input.value.slice(1);
 	input.value = uppercaseName;
 
 	return uppercaseName;
-
 }

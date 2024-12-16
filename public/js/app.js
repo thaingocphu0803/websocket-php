@@ -16,15 +16,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 		method: "post",
 	});
 	const data = await response.json();
-	if (data && !data.isLogin) {
+
+	console.log(data.data);
+
+	if (!data.status) {
 		Navigate("/login");
 		return;
 	}else{
 		socket.onopen = () => {
-			if (data.userId) {		
+			if (data.data.username) {		
 				const message = {
 					type: "userConnect",
-					userConnect: data.userId,
+					userConnect: data.data.username,
 				};
 		
 				socket.send(JSON.stringify(message));

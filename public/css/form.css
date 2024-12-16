@@ -12,7 +12,7 @@
 	color: var(--rgb-dark-grey);
 }
 
-#username, #password, #confirm_pass, #first_name, #last_name {
+#username, #password, #confirm_password, #firstname, #lastname {
 	padding: 10px;
 	border-radius: 10px;
 	border: var(--solid-1) whitesmoke;
@@ -47,7 +47,7 @@
 }
 
 
-#username:focus, #password:focus, #confirm_pass:focus, #first_name:focus, #last_name:focus {
+#username:focus, #password:focus, #confirm_password:focus, #firstname:focus, #lastname:focus {
 	outline:var(--solid-2) var(--rgb-blue);
 
 }
@@ -59,6 +59,6 @@
 	gap: 1em
 }
 
-#first_name, #last_name{
+#firstname, #lastname{
 	width: 100px;
 }

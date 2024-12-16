@@ -1,3 +1,8 @@
+<?php 
+	require_once __DIR__ . "/components/alert.php"; 
+?>
+
+
 <div id="form_login" onkeyup="submitLogin(event)">
 	<h1>User Login</h1>
 	<div class="from-input">
