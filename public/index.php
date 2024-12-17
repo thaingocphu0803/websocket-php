@@ -8,6 +8,7 @@
 	<link rel="stylesheet">
 	<link rel="stylesheet" href="./css/style.css">
 	<link rel="stylesheet" href="./css/form.css">
+	<link rel="stylesheet" href="./css/header.css">
 	<title>Chat App</title>
 </head>
 
