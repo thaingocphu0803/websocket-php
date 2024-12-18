@@ -1,6 +1,6 @@
 const sendMessage = () => {
 	const sender = document.getElementById("sender").textContent;
-	const text = document.getElementById("message").value;
+	const text = document.getElementById("input_message").value;
 	const message = {
 		type: 'sendMessage',
 		from: sender,

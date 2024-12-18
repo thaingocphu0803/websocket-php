@@ -17,8 +17,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	});
 	const data = await response.json();
 
-	console.log(data.data);
-
 	if (!data.status) {
 		Navigate("/login");
 		return;
@@ -69,12 +67,10 @@ const Navigate = async (pathname) => {
 		case "register":
 			app.innerHTML = await response.text();
 			break;
-		case "listchat":
+		case "dashboard":
 			app.innerHTML = await response.text();
 			listApi();
 			break;
-		case "boxchat":
-			app.innerHTML = await response.text();
 		default:
 			break;
 	}

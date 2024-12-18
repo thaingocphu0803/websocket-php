@@ -8,7 +8,7 @@
 	<link rel="stylesheet">
 	<link rel="stylesheet" href="./css/style.css">
 	<link rel="stylesheet" href="./css/form.css">
-	<link rel="stylesheet" href="./css/header.css">
+	<link rel="stylesheet" href="./css/dashboard.css">
 	<title>Chat App</title>
 </head>
 
@@ -18,9 +18,9 @@
 	<script src="/js/app.js" defer></script>
 	<script src="/js/event.js" defer></script>
 	<script src="/js/util.js" defer></script>
+	<script src="/js/pageJS/list.js" defer></script>
+	<script src="/js/pageJS/inbox.js" defer></script>
 	<script src="/js/pageJS/login.js" defer></script>
-	<script src="/js/pageJS/boxchat.js" defer></script>
-	<script src="/js/pageJS/listchat.js" defer></script>
 	<script src="/js/pageJS/register.js" defer></script>
 
 </body>

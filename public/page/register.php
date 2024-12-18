@@ -4,7 +4,7 @@
 		require_once __DIR__ . "/components/alert.php";
 	?>
 
-	<div id='form_register' onkeyup="submitRegister(event)">
+	<form id='form_register' onkeyup="submitRegister(event)">
 
 		<h1>Register</h1>
 
@@ -77,5 +77,5 @@
 		</div>
 
 
-	</div>
+	</form>
 </div>

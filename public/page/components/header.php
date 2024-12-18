@@ -4,7 +4,7 @@ session_start();
 
 $auth = new Auth();
 
-$username = $auth->checkAuth();
+$fullname = $auth->checkAuth();
 
 ?>
 
@@ -14,12 +14,12 @@ $username = $auth->checkAuth();
 		<!-- start-dropdown-btn -->
 		<div id="dropdown_btn" onclick="handleDropdown()">
 			<img src="../../asset/logo.png" alt="user's avatar" id="avt" width="50px" height="50px">
-			<div id="sender"><?= $username ?></div>
+			<div id="sender"><?= $fullname ?></div>
 			<svg id="icon-up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20px" height="20px">
-				<path fill="#464447" d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z" />
+				<path fill="#ffffff" d="M233.4 105.4c12.5-12.5 32.8-12.5 45.3 0l192 192c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L256 173.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l192-192z" />
 			</svg>
 			<svg id="icon-down" xmlns="http://www.w3.org/2000/svg" class="hidden" viewBox="0 0 512 512" width="20px" height="20px">
-				<path fill="#464447" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
+				<path fill="#ffffff" d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z" />
 			</svg>
 		</div>
 		<!-- end-dropdown-btn -->
@@ -50,7 +50,4 @@ $username = $auth->checkAuth();
 		<!-- end-dropdown-content -->
 	</div>
 	<!-- end-dropdown -->
-
-		<input id="search" type="text" placeholder="Search....">
-
 </div>

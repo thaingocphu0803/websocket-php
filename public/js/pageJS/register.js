@@ -51,6 +51,8 @@ const register = async () => {
 };
 
 const submitRegister = (event) => {
+	event.preventDefault();
+
 	if (event.key === "Enter") {
 		register();
 	}

@@ -4,7 +4,7 @@
 		require_once __DIR__ . "/components/alert.php";
 	?>
 
-	<div id="form_login" onkeyup="submitLogin(event)">
+	<form id="form_login" onkeyup="submitLogin(event)">
 		<h1>Login</h1>
 		<div class="from-input">
 			<label for="username">
@@ -41,5 +41,5 @@
 		</div>
 
 
-	</div>
+	</form>
 </div>

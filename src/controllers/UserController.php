@@ -42,12 +42,14 @@ class UserController
 		if ($user) {
 
 			if ($remember === 1) {
-				$this->auth->generate_JWT(['username' => $user['username']]);
+				$this->auth->generate_JWT(['fullname' => $user['fullname']]);
 			}
 
 			$_SESSION['username'] = $user['username'];
+			$_SESSION['fullname'] = $user['fullname'];
 
-			$this->util->sendData(true, 'Login successfully', ['username' => $user['username']]);
+
+			$this->util->sendData(true, 'Login successfully');
 		} else {
 			$this->util->sendData(false, 'Username or password is invalid');
 		}
@@ -89,15 +91,9 @@ class UserController
 		$result = $this->userModel->get_list_user($username);
 
 		if ($result) {
-			echo json_encode([
-				'message' => 'get list successfull',
-				'list' => $result
-			]);
+			$this->util->sendData(true, 'get list successfully', ['list' => $result]);
 		} else {
-			echo json_encode([
-				'message' => 'get list fail',
-				'list' => null
-			]);
+			$this->util->sendData(true, 'get list failed');
 		}
 	}
 
@@ -109,14 +105,13 @@ class UserController
 			$this->util->sendData(false);
 		}
 
-		$this->util->sendData(true, '', ['username' => $auth]);
+		$this->util->sendData(true, '', ['username' => $_SESSION['username']]);
 
 	}
 
 
 	public function logout()
 	{
-
 		session_unset();
 		session_destroy();
 		$this->util->clearCookie('auth');

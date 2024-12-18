@@ -50,7 +50,7 @@ const login = async () => {
 	document.getElementById('form_login').style.alignSelf = 'start';
 
 	setTimeout(()=> {
-		Navigate("/listchat");
+		Navigate("/dashboard");
 	},1000);
 	}
 
@@ -61,6 +61,9 @@ const toRegister = () => {
 
 
 const submitLogin = (event) =>{
+
+	event.preventDefault();
+
 	if(event.key === 'Enter'){	
 		login()
 	}
