@@ -5,19 +5,23 @@ use MessageModel;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use UserConnectionModel;
+use Validation;
 
 require_once __DIR__ . '/../models/UserConnectionModel.php';
 require_once __DIR__ . '/../models/MessageModel.php';
+require_once __DIR__ . '/../helpers/Validation.php';
 
 class Chat implements MessageComponentInterface {
     protected $userConnectionModel;
     protected $clients;
     protected $messageModel;
+    protected $validation;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
         $this->userConnectionModel = new UserConnectionModel();
         $this->messageModel =  new MessageModel();
+        $this->validation = new Validation();
     }
 
     public function onOpen(ConnectionInterface $conn) {
@@ -72,13 +76,16 @@ class Chat implements MessageComponentInterface {
             
             $toUser = $ojbMessage['to'];
             $receiver = $this->userConnectionModel->get_user_connection($toUser);
+            $mssg = $this->validation->clearInput($ojbMessage["message"]);
 
             $messageData = [
                 'room' => $ojbMessage["room"],
                 'sender' => $ojbMessage["from"],
-                'mssg' => $ojbMessage["message"],
-                'create_at' => $ojbMessage["date"],                
+                'mssg' => $mssg,
+                'create_at' => $ojbMessage["date"],             
             ];
+
+            echo $messageData['create_at'];
 
             $result = $this->messageModel->saveMessage($messageData);
 

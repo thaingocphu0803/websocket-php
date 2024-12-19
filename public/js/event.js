@@ -53,7 +53,8 @@ const handleDropdown = () =>{
 
 //handle to show inbox box
 
-const showInboxBox = (fullname, isOnline, username) =>{
+const showInboxBox = async (fullname, isOnline, username) =>{
+	await getMessage();
 
 	const inbox = {
 		image: document.getElementById('inbox_img'),
@@ -80,6 +81,21 @@ const showInboxBox = (fullname, isOnline, username) =>{
 		inbox.status.textContent = '';
 
 	}
+}
+// call api to get message
+const getMessage = async () =>{
+
+	const from = document.getElementById("username").textContent;
+	console.log(from);
+	const to = document.getElementById("partner_username").textContent;
+	console.log(to);
+
+	const room = [from, to].sort().join("_");
+
+	const response = await fetch(`/${endpoint}/get-message`,{
+		method: 'post',
+		body: JSON.stringify({room})
+	})
 }
 
 // handle to show image if close inbox box

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../src/controllers/UserController.php';
+require_once __DIR__ . '/../src/controllers/MessageController.php';
 require_once __DIR__ . '/../config.php';
 
 
@@ -10,6 +11,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 class Router
 {
 	public $user;
+	public $message;
 	public $path;
 	public $param;
 	private static $instance = null;
@@ -17,6 +19,7 @@ class Router
 	public function __construct()
 	{
 		$this->user = new UserController();
+		$this->message = new MessageController();
 		$this->setURL();
 	}
 
@@ -48,7 +51,7 @@ $router = Router::getInstance();
 
 //check request URL to call subtable function
 switch ($router->path) {
-		// auhenController
+		// UserController
 	case 'login':
 		$router->user->login();
 		break;
@@ -63,6 +66,10 @@ switch ($router->path) {
 		break;
 	case 'logout':
 		$router->user->logout();
+		break;
+	// MessageController
+	case 'get-message':
+		$router->message->get_message();
 		break;
 	default:
 		break;
