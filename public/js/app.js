@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 			}
 		};
 	
-		Navigate(pathname);
+		Navigate('/dashboard');
 	}
 
 });

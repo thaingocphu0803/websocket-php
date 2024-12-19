@@ -42,14 +42,20 @@ class UserController
 		if ($user) {
 
 			if ($remember === 1) {
-				$this->auth->generate_JWT(['fullname' => $user['fullname']]);
+				
+				$payload= [
+					'fullname' => $user['fullname'],
+					'username' => $user['username']
+				]; 
+
+				$this->auth->generate_JWT($payload);
 			}
 
 			$_SESSION['username'] = $user['username'];
 			$_SESSION['fullname'] = $user['fullname'];
 
 
-			$this->util->sendData(true, 'Login successfully');
+			$this->util->sendData(true, 'Login successfully', ['username' => $user['username']] );
 		} else {
 			$this->util->sendData(false, 'Username or password is invalid');
 		}
@@ -105,7 +111,7 @@ class UserController
 			$this->util->sendData(false);
 		}
 
-		$this->util->sendData(true, '', ['username' => $_SESSION['username']]);
+		$this->util->sendData(true, '', ['username' => $auth->username]);
 
 	}
 
@@ -116,9 +122,7 @@ class UserController
 		session_destroy();
 		$this->util->clearCookie('auth');
 
-		echo json_encode([
-			'message' => 'user is logged out',
-			'isLogin' => false,
-		]);
+		$this->util->sendData(true, 'Logout successfully');
+
 	}
 }

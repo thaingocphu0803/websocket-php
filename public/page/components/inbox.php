@@ -3,6 +3,7 @@
 	<div class="inbox-header">
 		<img id="avt" src="../asset/logo.png" alt="user's avatar" width="50px" height="50px">
 		<span id="fullname_b"></span>
+		<span id="partner_username" class="hidden"></span>
 		<span id="status_b"></span>
 		<span id="close" onclick="closeInboxBox()">
 			<svg fill="#BFB7C7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="30px" height="30px">
@@ -12,16 +13,7 @@
 
 	</div>
 
-	<div class="inbox-body">
-		<div class="message-component left">
-			<span id="time_receive" class="datetime right">20/12/2024 11:30:30</span>
-			<span id="message_receive" class="left">hello</span>
-		</div>
-		<div class="message-component right">
-			<span id="time_send" class="datetime right">20/12/2024 11:30:30</span>
-			<span id="message_send" class="left">hello too</span>
-		</div>
-	</div>
+	<div class="inbox-body" id="inbox_box"></div>
 
 	<div class="inbox-button">
 		<textarea type="text" id="input_message" placeholder="Chatting..."></textarea>

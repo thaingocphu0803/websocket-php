@@ -20,10 +20,17 @@ class Auth
 		$jwt = $this->util->getCookie('auth');
 
 		if(!empty($_SESSION)){
-			return $_SESSION['fullname'];
+
+			$auth = [
+				'fullname' => $_SESSION['fullname'],
+				'username' => $_SESSION['username']
+
+			];
+			return (object) $auth;
+
 		}elseif($jwt){
 			$auth =  $this->retrieve_JWT($jwt);
-			return $auth->fullname;		
+			return $auth;		
 		}
 	}
 

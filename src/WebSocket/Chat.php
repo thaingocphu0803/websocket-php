@@ -1,20 +1,23 @@
 <?php
 namespace MyApp;
 
+use MessageModel;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use UserConnectionModel;
 
 require_once __DIR__ . '/../models/UserConnectionModel.php';
+require_once __DIR__ . '/../models/MessageModel.php';
 
 class Chat implements MessageComponentInterface {
     protected $userConnectionModel;
     protected $clients;
-    // protected $onlineConnection = [];
+    protected $messageModel;
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
         $this->userConnectionModel = new UserConnectionModel();
+        $this->messageModel =  new MessageModel();
     }
 
     public function onOpen(ConnectionInterface $conn) {
@@ -33,23 +36,62 @@ class Chat implements MessageComponentInterface {
             $result = $this->userConnectionModel->save_user_connection($userConnect, $connection_id, 1);
             if(!$result) die;
 
-            // $this->onlineConnection[$connection_id] = $userConnect;
+            
+            foreach ($this->clients as $client){
+                if($from !== $client){
+
+                    $sendMessage = [
+                        'type' => $ojbMessage["type"],
+                        'username' => $ojbMessage["userConnect"],
+                        'isOnline' => 1,
+                    ];
+
+                    $client->send(json_encode($sendMessage));
+                }
+            }
 
         }elseif ($ojbMessage["type"] == 'userDisconnect'){
             $onlineUser = $ojbMessage['userDisconect'];
-            $this->userConnectionModel->save_user_connection($onlineUser, $connection_id, 0);
+            $result = $this->userConnectionModel->save_user_connection($onlineUser, $connection_id, 0);
+            if(!$result) die;
+
+            foreach ($this->clients as $client){
+                if($from !== $client){
+
+                    $sendMessage = [
+                        'type' => $ojbMessage["type"],
+                        'username' => $ojbMessage["userDisconect"],
+                        'isOnline' => 0,
+                    ];
+
+                    $client->send(json_encode($sendMessage));
+                }
+            }
+
         }elseif ($ojbMessage["type"] == 'sendMessage'){
             
             $toUser = $ojbMessage['to'];
             $receiver = $this->userConnectionModel->get_user_connection($toUser);
-            echo $receiver['connection_id'];
+
+            $messageData = [
+                'room' => $ojbMessage["room"],
+                'sender' => $ojbMessage["from"],
+                'mssg' => $ojbMessage["message"],
+                'create_at' => $ojbMessage["date"],                
+            ];
+
+            $result = $this->messageModel->saveMessage($messageData);
+
+            if(!$result) die();
+
             foreach ($this->clients as $client){
                 if($client->resourceId === $receiver['connection_id']){
 
                     $sendMessage = [
+                        'type' => $ojbMessage["type"],
+                        'room' => $ojbMessage['room'],
+                        'date' => $ojbMessage['date'],
                         'message' => $ojbMessage['message'],
-                        'sender' => $ojbMessage['from'],
-                        'receiver' => $ojbMessage['to']
                     ];
 
                     $client->send(json_encode($sendMessage));

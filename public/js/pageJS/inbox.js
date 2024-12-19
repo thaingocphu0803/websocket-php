@@ -1,39 +1,97 @@
+let currentOnline = null;
+
 const sendMessage = () => {
-	const sender = document.getElementById("sender").textContent;
-	const text = document.getElementById("input_message").value;
-	const message = {
+	const from = document.getElementById("username").textContent;
+	const text = document.getElementById("input_message").value.trim();
+	const to = document.getElementById("partner_username").textContent;
+	let sendComponent = document.getElementById("inbox_box")
+	let sendDate = getSendDate();
+	
+	const room = [from, to].sort().join("_");
+
+	if(!text) return;
+
+	const message  = {
 		type: 'sendMessage',
-		from: sender,
-		to: receiver,
+		room,
+		from,
+		to,
+		date: sendDate,
 		message: text
 	}
+
 	socket.send(JSON.stringify(message));
+	document.getElementById("input_message").value =""
 
-	document.getElementById(
-		"message_box"
-	).innerHTML += `<p style="color:red"> Me: ${text}</p>`;
 
+	sendComponent.innerHTML += `
+		<div class="message-component right">
+			<span id="time_send" class="datetime right">${sendDate}</span>
+			<span id="message_send" class="left">${text}</span>
+		</div>
+	`
 };
 
 socket.onmessage = (event) => {
 
-	const sender = document.getElementById("sender").textContent;
-	currentRoom = [sender, objMessage.receiver].sort().join('_')
-
 	const objMessage = JSON.parse(event.data);
-	keyRoom = [objMessage.sender, objMessage.receiver].sort().join('_')
 
-	console.log('keyroom', keyRoom); 
-	console.log('curentroom', currentRoom);
+	if(objMessage.type === 'sendMessage'){
+		const from = document.getElementById("username").textContent;
+		const to = document.getElementById("partner_username").textContent;
+		let receiveComponent = document.getElementById("inbox_box");
+		currentRoom = [from, to].sort().join('_');
+		
+		if(objMessage.room === currentRoom){
+			receiveComponent.innerHTML += `
+			<div class="message-component left">
+				<span id="time_receive" class="datetime right">${objMessage.date}</span>
+				<span id="message_receive" class="left">${objMessage.message}</span>
+			</div>
+		`;
+		}
+	}else if(objMessage.type === "userConnect" && objMessage.isOnline === 1){
+		const userStatus = getUserStatus(objMessage.username);
+		if(!userStatus) return;
+		userStatus.textContent = "Online";
+		currentOnline = objMessage.isOnline;
 
-	if(keyRoom !== currentRoom) return;
+	}else if(objMessage.type === "userDisconnect" && objMessage.isOnline === 0){
+		const userStatus = getUserStatus(objMessage.username);
+		if(!userStatus) return;
+		userStatus.textContent = "";
+		currentOnline = objMessage.isOnline;
+	}
 
-	document.getElementById(
-		"message_box"
-	).innerHTML += `<p> ${objMessage.sender}: ${objMessage.message}</p>`;
 };
+
+const getUserStatus = (element) => {
+	const userCard = document.getElementById(`${element}`);
+	if(!userCard) return;
+	const userStatus = userCard.querySelector('#status_l');
+
+	if(userStatus) return userStatus;
+
+}
 
 socket.onerror = (error) => {
-	console.error("Đã xảy ra lỗi WebSocket:", error);
+	console.error("Socket Error:", error);
 };
+
+const getSendDate = () =>{
+	const now = new Date();
+
+	// format time to string
+	const localTime = now.toLocaleString('en-US', {
+		year: 'numeric',    
+		month: '2-digit',    
+		day: '2-digit',      
+		hour: '2-digit',     
+		minute: '2-digit', 
+		second: '2-digit',
+		hour12:true
+	})
+
+	return localTime;
+}
 

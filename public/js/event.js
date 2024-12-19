@@ -1,19 +1,18 @@
 const logout = async () => {
-	const sender = document.getElementById('sender').textContent;
+	const sender = document.getElementById('username').textContent;
+
+	const message = {
+		type: 'userDisconnect',
+		userDisconect: sender
+	}
+
+	socket.send(JSON.stringify(message));
 
 	const response = await fetch(`/${endpoint}/logout`, {
 		method: 'post'
 	});
 	const data = await response.json();
-	if(data && !data.isLogin){
-
-		const message = {
-			type: 'userDisconnect',
-			userDisconect: sender
-		}
-
-		socket.send(JSON.stringify(message));
-
+	if(data.status){
 		Navigate('/login');
 		return
 	}
@@ -54,11 +53,13 @@ const handleDropdown = () =>{
 
 //handle to show inbox box
 
-const showInboxBox = (fullname, isOnline) =>{
+const showInboxBox = (fullname, isOnline, username) =>{
+
 	const inbox = {
 		image: document.getElementById('inbox_img'),
 		box: document.getElementById('inbox'),
 		fullname: document.getElementById('fullname_b'),
+		username: document.getElementById('partner_username'),
 		status: document.getElementById('status_b')
 	}
 
@@ -69,9 +70,11 @@ const showInboxBox = (fullname, isOnline) =>{
 	}
 
 	inbox.fullname.textContent = fullname;
+	inbox.username.textContent = username;
 
 
-	if(isOnline == '1'){
+
+	if(isOnline == '1' || currentOnline == '1'){
 		inbox.status.textContent = 'Online';
 	}else{
 		inbox.status.textContent = '';
@@ -92,3 +95,18 @@ const closeInboxBox = () => {
 		inbox.box.classList.add('hidden');
 	}
 }
+
+const unescapeHTML = (str) => {
+	const doc = new DOMParser().parseFromString(str, 'text/html');
+
+	return doc.documentElement.textContent || doc.body.textContent;
+}
+
+const escapeHTML = (str) => {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+};
