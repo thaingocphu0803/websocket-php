@@ -85,8 +85,6 @@ class Chat implements MessageComponentInterface {
                 'create_at' => $ojbMessage["date"],             
             ];
 
-            echo $messageData['create_at'];
-
             $result = $this->messageModel->saveMessage($messageData);
 
             if(!$result) die();

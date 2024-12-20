@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../helpers/Validation.php';
+require_once __DIR__ . '/../models/UserConnectionModel.php';
 require_once __DIR__ . '/../helpers/Util.php';
 require_once __DIR__ . '/../helpers/Auth.php';
 
@@ -14,11 +15,12 @@ class UserController
 	private $validation;
 	private $util;
 	private $auth;
+	private $roomModel;
 
 	public function __construct()
 	{
 		session_start();
-
+		$this->roomModel = new RoomModel();
 		$this->userModel = new UserModel();
 		$this->validation = new Validation();
 		$this->util = new Util();
@@ -110,6 +112,25 @@ class UserController
 		if(!$auth){
 			$this->util->sendData(false);
 		}
+
+		$room = $this->roomModel->check_room_status($auth->username);
+
+		if(!empty($room)){
+			$partner  = $this->roomModel->get_status_partner($room['chat_with']);
+
+			$data = [
+				'username' => $auth->username,
+				'partnerFullName' => $partner['fullname'],
+				'parterIsOnline' => $partner['isOnline'],
+				'partnerUserName' => $room['chat_with'],
+				'roomStatus' => $room['stt']
+
+			];
+
+			$this->util->sendData(true, '', $data);
+
+		}
+
 
 		$this->util->sendData(true, '', ['username' => $auth->username]);
 

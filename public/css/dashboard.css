@@ -249,6 +249,7 @@
 	grid-auto-rows: 100px;
 	align-items: center;
 	padding: 10px;
+	overflow-y: auto;
 }
 
 .left{

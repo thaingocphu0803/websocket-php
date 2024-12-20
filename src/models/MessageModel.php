@@ -20,4 +20,16 @@ class MessageModel {
 
 		return $stmt->rowCount() > 0;
 	}
+
+	public function get_list_message($room){
+		$stmt = $this->db->query('SELECT room, mssg, sender, create_at FROM messages WHERE room = :room ORDER BY create_at',[
+			':room' => $room
+		]);
+
+		$result = $this->db->fetch_all($stmt);
+
+		if(empty($result)) return false;
+
+		return $result;
+	}
 }

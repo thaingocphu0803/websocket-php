@@ -2,13 +2,17 @@
 
 <script>
 	const logout = async () => {
-		const response = await fetch(`/${endpoint}/logout`, {
-			method: 'post'
-		});
-		const data = await response.json();
-		if (data && !data.isLogin) {
-			Navigate('/login');
-			return
+		try {
+			const response = await fetch(`/${endpoint}/logout`, {
+				method: 'post'
+			});
+			const data = await response.json();
+			if (data && !data.isLogin) {
+				Navigate('/login');
+				return
+			}
+		} catch (err) {
+			console.log(err)
 		}
 	}
 </script>

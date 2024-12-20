@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../src/controllers/UserController.php';
-require_once __DIR__ . '/../src/controllers/MessageController.php';
+require_once __DIR__ . '/../src/controllers/InboxController.php';
 require_once __DIR__ . '/../config.php';
 
 
@@ -11,7 +11,7 @@ header('Access-Control-Allow-Headers: Content-Type');
 class Router
 {
 	public $user;
-	public $message;
+	public $inbox;
 	public $path;
 	public $param;
 	private static $instance = null;
@@ -19,7 +19,7 @@ class Router
 	public function __construct()
 	{
 		$this->user = new UserController();
-		$this->message = new MessageController();
+		$this->inbox = new InboxController();
 		$this->setURL();
 	}
 
@@ -67,10 +67,12 @@ switch ($router->path) {
 	case 'logout':
 		$router->user->logout();
 		break;
-	// MessageController
+	// InboxController
 	case 'get-message':
-		$router->message->get_message();
+		$router->inbox->get_message();
 		break;
+	case 'set-room-status':
+		$router->inbox->set_room_status();
 	default:
 		break;
 }

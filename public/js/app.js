@@ -2,39 +2,46 @@
 
 const endpoint = "endpoint.php";
 const pathname = location.pathname.toLowerCase();
+let partner = {};
 
-//using to get to todo detail on edit.js
-let todoId = null;
-let todoStatus = null;
-let receiver = null;
 //generate socket connection
 
 const socket = new WebSocket(`ws://localhost:9000`);
 
 document.addEventListener("DOMContentLoaded", async () => {
-	const response = await fetch(`/${endpoint}/check-login`, {
-		method: "post",
-	});
-	const data = await response.json();
+	try {
+		const response = await fetch(`/${endpoint}/check-login`, {
+			method: "post",
+		});
+		const data = await response.json();
 
-	if (!data.status) {
-		Navigate("/login");
-		return;
-	}else{
-		socket.onopen = () => {
-			if (data.data.username) {		
-				const message = {
-					type: "userConnect",
-					userConnect: data.data.username,
-				};
-		
-				socket.send(JSON.stringify(message));
+		if (!data.status) {
+			Navigate("/login");
+			return;
+		} else {
+			socket.onopen = () => {
+				if (data.data.username) {
+					const message = {
+						type: "userConnect",
+						userConnect: data.data.username,
+					};
+
+					socket.send(JSON.stringify(message));
+				}
+			};
+
+			if(data.data.roomStatus === 'A'){ 
+				partner.FullName = data.data.partnerFullName;
+				partner.isOnline = data.data.parterIsOnline;
+				partner.Username = data.data.partnerUserName;
 			}
-		};
-	
-		Navigate('/dashboard');
-	}
 
+			Navigate("/dashboard");
+
+		}
+	} catch (err) {
+		console.log(err);
+	}
 });
 
 // listen event when user back or forward
@@ -54,24 +61,31 @@ const Navigate = async (pathname) => {
 
 	const path = param[1] ? param[1] : "login";
 
-	receiver = param[2] ? param[2] : null;
 
-	const response = await fetch(`/page/${path}.php`);
+	try {
+		const response = await fetch(`/page/${path}.php`);
 
-	const app = document.getElementById("app");
+		const app = document.getElementById("app");
 
-	switch (path) {
-		case "login":
-			app.innerHTML = await response.text();
-			break;
-		case "register":
-			app.innerHTML = await response.text();
-			break;
-		case "dashboard":
-			app.innerHTML = await response.text();
-			listApi();
-			break;
-		default:
-			break;
+		switch (path) {
+			case "login":
+				app.innerHTML = await response.text();
+				break;
+			case "register":
+				app.innerHTML = await response.text();
+				break;
+			case "dashboard":
+				app.innerHTML = await response.text();
+				listApi();
+
+				if(partner && Object.keys(partner).length > 0){
+					showInboxBox(partner.FullName, partner.isOnline, partner.Username);
+				}
+				break;
+			default:
+				break;
+		}
+	} catch (err) {
+		console.log(err);
 	}
 };
