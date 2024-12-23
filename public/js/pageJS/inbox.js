@@ -205,10 +205,14 @@ const scollToBottom = () => {
 }
 
 // reset number of notification to 0
-const resetNotification = (partner_username) => {
-	console.log(partner_username);
-	const Notification = document.getElementById(`${partner_username}`).querySelector(".notify");
-	if(Notification){
-		Notification.textContent = 0;
+const resetNotification = (element) => {
+	const Notification = element.querySelector(".notify") ?? null;
+	
+	if(!Notification) return;
+
+	Notification.textContent = 0;
+
+	if(!Notification.classList.contains('hidden')){
+		Notification.classList.add('hidden');
 	}
 }
