@@ -47,7 +47,7 @@ class UserModel {
 	}
 
 	public function get_list_user($username){
-		$stmt = $this->db->query("SELECT users.username as username, users.fullname as fullname, user_connection.is_online as isOnline  FROM users JOIN user_connection ON users.username = user_connection.username WHERE users.username != :username", [
+		$stmt = $this->db->query("SELECT users.username as partner_username, users.fullname as partner_fullname, user_connection.is_online as isOnline  FROM users JOIN user_connection ON users.username = user_connection.username WHERE users.username != :username", [
 			':username' => $username
 		]);
 

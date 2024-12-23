@@ -52,8 +52,3 @@ $authInfor = $auth->checkAuth();
 	</div>
 	<!-- end-dropdown -->
 </div>
-
-<script>
-	const sender = "<?= $authInfor->username ?>"
-	console.log("hello",sender);
-</script>

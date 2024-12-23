@@ -22,14 +22,6 @@ const logout = async () => {
 	}
 };
 
-//socket disconect
-socket.onclose = () => {
-	const message = {
-		type: "userDisconnect",
-	};
-
-	socket.send(JSON.stringify(message));
-};
 // handle dropdown in home page
 const handleDropdown = () => {
 	const dropdown = {
@@ -72,4 +64,17 @@ const escapeHTML = (str) => {
 
 const clearInbox = () => {
 	document.getElementById("inbox_box").innerHTML = "";
+};
+
+socket.onerror = (error) => {
+	console.error("Socket Error:", error);
+};
+
+//socket disconect
+socket.onclose = () => {
+	const message = {
+		type: "userDisconnect",
+	};
+
+	socket.send(JSON.stringify(message));
 };

@@ -37,7 +37,7 @@ class RoomModel{
 	}
 
 	public function check_room_status($user_open){
-		$stmt = $this->db->query("SELECT chat_with, stt FROM rooms WHERE user_open = :user_open LIMIT 1", [
+		$stmt = $this->db->query("SELECT chat_with, stt, room FROM rooms WHERE user_open = :user_open LIMIT 1", [
 			':user_open' => $user_open
 		]);
 

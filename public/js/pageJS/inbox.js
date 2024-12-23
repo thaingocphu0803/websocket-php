@@ -61,10 +61,6 @@ const getUserStatus = (element) => {
 	if (userStatus) return userStatus;
 };
 
-socket.onerror = (error) => {
-	console.error("Socket Error:", error);
-};
-
 const getSendDate = () => {
 	const date = new Date();
 
@@ -90,20 +86,22 @@ const renderMessage = (date, message, position) => {
 		</div>
 	`;
 
-	iboxComponent.scrollTop = iboxComponent.scrollHeight;
+	scollToBottom();
 };
 
 //handle to show inbox box
 
 const showInboxBox = async (partnerFullName, isOnline, partnerUserName) => {
 
-	console.log(partnerFullName, isOnline, partnerUserName);
-
 	const from = document.getElementById("username").textContent;
 
 	const room = [from, partnerUserName].sort().join("_");
 	currentRoom = room;
 
+	// const slug = partnerFullName.replace(" ", "-")
+
+	// window.history.replaceState({}, '',`/dashboard/${slug}`)
+	
 	const status = await setRoomStatus(room, "A", from);
 	if (!status) return;
 
@@ -130,6 +128,10 @@ const showInboxBox = async (partnerFullName, isOnline, partnerUserName) => {
 	} else {
 		inbox.status.textContent = "";
 	}
+
+	scollToBottom();
+
+
 };
 
 // handle to show image if close inbox box
@@ -156,7 +158,7 @@ const renderListMessage = async (room, from) => {
 	try {
 		const response = await fetch(`/${endpoint}/get-message`, {
 			method: "post",
-			body: JSON.stringify({ room }),
+			body: JSON.stringify({ room, from }),
 		});
 
 		const data = await response.json();
@@ -191,10 +193,22 @@ const setRoomStatus = async (room, status, user_open) => {
 
 		const data = await response.json();
 
-		console.log(data);
-
 		if (data.status) return status;
 	} catch (err) {
 		console.log(err);
 	}
 };
+
+const scollToBottom = () => {
+	const inboxBox = document.getElementById('inbox_box');
+	inboxBox.scrollTop = inboxBox.scrollHeight;
+}
+
+// reset number of notification to 0
+const resetNotification = (partner_username) => {
+	console.log(partner_username);
+	const Notification = document.getElementById(`${partner_username}`).querySelector(".notify");
+	if(Notification){
+		Notification.textContent = 0;
+	}
+}

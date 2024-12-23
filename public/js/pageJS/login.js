@@ -52,7 +52,7 @@ const login = async () => {
 		document.getElementById("form_login").style.alignSelf = "start";
 
 		setTimeout(() => {
-			Navigate("/dashboard");
+			window.location.replace('/dashboard');
 		}, 1000);
 	} catch (err) {
 		console.log(err);

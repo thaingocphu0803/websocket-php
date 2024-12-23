@@ -1,27 +1,29 @@
 <?php
 
-require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../helpers/Validation.php';
-require_once __DIR__ . '/../models/UserConnectionModel.php';
 require_once __DIR__ . '/../helpers/Util.php';
 require_once __DIR__ . '/../helpers/Auth.php';
-
+require_once __DIR__ . '/../models/UserModel.php';
+require_once __DIR__ . '/../models/UserConnectionModel.php';
+require_once __DIR__ . '/../models/MessageModel.php';
 
 
 class UserController
 {
 
-	private $userModel;
 	private $validation;
 	private $util;
 	private $auth;
 	private $roomModel;
+	private $userModel;
+	private $messageModel;
 
 	public function __construct()
 	{
 		session_start();
 		$this->roomModel = new RoomModel();
 		$this->userModel = new UserModel();
+		$this->messageModel = new MessageModel();
 		$this->validation = new Validation();
 		$this->util = new Util();
 		$this->auth = new Auth();
@@ -99,6 +101,14 @@ class UserController
 		$result = $this->userModel->get_list_user($username);
 
 		if ($result) {
+
+			foreach ($result as &$partner){
+				$number_unread = $this->messageModel->get_number_unread($username, $partner['partner_username']);
+
+				$partner['number_unread'] = $number_unread;
+
+			}
+
 			$this->util->sendData(true, 'get list successfully', ['list' => $result]);
 		} else {
 			$this->util->sendData(true, 'get list failed');
