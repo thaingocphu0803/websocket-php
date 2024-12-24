@@ -26,13 +26,6 @@ const showDanger = (message) => {
 	}
 };
 
-// const Hidden = () => {
-// 	const alertModel = document.getElementById("alert_modal")
-// 	if (!alertModel.classList.contains("hidden")) {
-// 		alertModel.classList.add("hidden");
-// 	}
-// };
-
 const setError = (message) => {
 	const error = document.getElementsByClassName("error")[0];
 

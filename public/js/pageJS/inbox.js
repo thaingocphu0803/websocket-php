@@ -109,9 +109,7 @@ const showInboxBox = async (partnerFullName, isOnline, partnerUserName) => {
 	const room = [from, partnerUserName].sort().join("_");
 	currentRoom = room;
 
-	const slug = partnerFullName.replace(" ", "-")
-
-	window.history.replaceState({}, '',`/dashboard#${slug}`)
+	window.history.replaceState({}, '',`/dashboard#${partnerUserName}`)
 	
 	const status = await setRoomStatus(room, "A", from);
 	if (!status) return;
@@ -141,8 +139,6 @@ const showInboxBox = async (partnerFullName, isOnline, partnerUserName) => {
 	}
 
 	scollToBottom();
-
-
 };
 
 // handle to show image if close inbox box
