@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+DE+VA+Guides&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Space+Grotesk:wght@300..700&display=swap');
+
 :root{
  --rgb-blue:  rgb(19, 143, 213 );
  --rgb-silver: rgb(205, 222, 236);
@@ -123,11 +125,6 @@
 ::-webkit-scrollbar{
 	width: 10px;
 }
-
-/* Track */
-::-webkit-scrollbar-track {
-  /* background: #f1f1f1;  */
-}
  
 /* Handle */
 ::-webkit-scrollbar-thumb {
@@ -137,4 +134,32 @@
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: var(--rgb-dark-violet); 
+}
+
+.rainbow_text_animated {
+    background: linear-gradient(to right, #135013 ,#099909, #7a8304, #5a5904);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: rainbow_animation 6s ease-in-out infinite;
+    background-size: 400% 100%;
+}
+
+@keyframes rainbow_animation {
+    0%,100% {
+        background-position: 0 0;
+    }
+
+    50% {
+        background-position: 100% 0;
+    }
+}
+
+.align-flex-end{
+	align-self: flex-end;
+	margin-bottom: 20px;
+}
+
+.input-file{
+	display: none;
 }

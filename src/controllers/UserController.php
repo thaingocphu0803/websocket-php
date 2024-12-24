@@ -100,6 +100,7 @@ class UserController
 
 		$result = $this->userModel->get_list_user($username);
 
+
 		if ($result) {
 
 			foreach ($result as &$partner){

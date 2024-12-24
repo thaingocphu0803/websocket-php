@@ -1,8 +1,12 @@
 <div id="form-container">
-	
+
 	<?php
-		require_once __DIR__ . "/components/alert.php";
+	require_once __DIR__ . "/components/alert.php";
 	?>
+
+	<div class="align-flex-end">
+		<?php include_once __DIR__ . "/components/logo.php" ?>
+	</div>
 
 	<form id='form_register' onkeyup="submitRegister(event)">
 

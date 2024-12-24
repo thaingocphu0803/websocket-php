@@ -4,6 +4,10 @@
 		require_once __DIR__ . "/components/alert.php";
 	?>
 
+	<div class="align-flex-end">
+		<?php include_once __DIR__ . "/components/logo.php" ?>
+	</div>
+
 	<form id="form_login" onkeyup="submitLogin(event)">
 		<h1>Login</h1>
 		<div class="from-input">

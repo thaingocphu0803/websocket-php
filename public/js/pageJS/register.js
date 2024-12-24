@@ -43,7 +43,6 @@ const register = async () => {
 
 		showSuccess(data.message);
 		clearError();
-		document.getElementById("form_register").style.alignSelf = "start";
 
 		setTimeout(() => {
 			Navigate("/login");
@@ -69,8 +68,8 @@ const validateRegister = (input) => {
 	let message = null;
 
 	const RegExp = {
-		fistname: /^[A-Za-z]+$/,
-		lastname: /^[A-Za-z]+$/,
+		fistname: /^[\p{L}]+$/u,
+		lastname: /^[\p{L}]+$/u,
 		username: /^[a-zA-Z0-9._]{6,}$/,
 		password:
 			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,

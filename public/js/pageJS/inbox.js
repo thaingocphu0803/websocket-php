@@ -27,9 +27,20 @@ const sendMessage = () => {
 };
 
 socket.onmessage = (event) => {
-	const objMessage = JSON.parse(event.data);
 
-	if (objMessage.type === "sendMessage") {
+	const objMessage = JSON.parse(event.data);
+	if(objMessage.type === 'unRead'){
+		const notification = document.getElementById(`${objMessage.sender}`).querySelector(".notify");
+
+			console.log(parseInt(notification.textContent))
+			notification.textContent = parseInt(notification.textContent || 0) + 1;
+			
+			if(notification.classList.contains('hidden')){
+				notification.classList.remove('hidden');
+			}
+
+
+	} else if (objMessage.type === "sendMessage") {
 		const from = document.getElementById("username").textContent;
 		const to = document.getElementById("partner_username").textContent;
 		currentRoom = [from, to].sort().join("_");
@@ -98,9 +109,9 @@ const showInboxBox = async (partnerFullName, isOnline, partnerUserName) => {
 	const room = [from, partnerUserName].sort().join("_");
 	currentRoom = room;
 
-	// const slug = partnerFullName.replace(" ", "-")
+	const slug = partnerFullName.replace(" ", "-")
 
-	// window.history.replaceState({}, '',`/dashboard/${slug}`)
+	window.history.replaceState({}, '',`/dashboard#${slug}`)
 	
 	const status = await setRoomStatus(room, "A", from);
 	if (!status) return;
@@ -138,6 +149,8 @@ const showInboxBox = async (partnerFullName, isOnline, partnerUserName) => {
 
 const closeInboxBox = async () => {
 	const from = document.getElementById("username").textContent;
+
+	window.history.replaceState({}, '',`/dashboard`)
 
 	const status = await setRoomStatus(currentRoom, "X", from);
 	if (!status) return;
@@ -206,7 +219,7 @@ const scollToBottom = () => {
 
 // reset number of notification to 0
 const resetNotification = (element) => {
-	const Notification = element.querySelector(".notify") ?? null;
+	const Notification = element.querySelector(".notify");
 	
 	if(!Notification) return;
 

@@ -1,13 +1,5 @@
 const logout = async () => {
-	const sender = document.getElementById("username").textContent;
-
-	const message = {
-		type: "userDisconnect",
-		userDisconect: sender,
-	};
-
-	socket.send(JSON.stringify(message));
-
+	setUserOffline();
 	try {
 		const response = await fetch(`/${endpoint}/logout`, {
 			method: "post",
@@ -72,9 +64,17 @@ socket.onerror = (error) => {
 
 //socket disconect
 socket.onclose = () => {
+	console.log("socket disconected");
+};
+
+// change user states when log out
+const setUserOffline = ()=> {
+	const sender = document.getElementById("username").textContent;
+
 	const message = {
 		type: "userDisconnect",
+		userDisconect: sender,
 	};
 
 	socket.send(JSON.stringify(message));
-};
+}

@@ -49,7 +49,6 @@ const login = async () => {
 
 		showSuccess(data.message);
 		clearError();
-		document.getElementById("form_login").style.alignSelf = "start";
 
 		setTimeout(() => {
 			window.location.replace('/dashboard');

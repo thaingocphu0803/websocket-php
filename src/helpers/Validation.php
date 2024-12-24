@@ -14,7 +14,7 @@ class Validation
 	{
 		$regUsername = "/^[a-zA-Z0-9._]{6,}$/";
 		$regPassword = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/";
-		$regName = "/^[A-Za-z]+$/";
+		$regName = "/^[\p{L}]+$/u";
 
 		if ($option === 'firstname' || $option === 'lastname') {
 			$subname = str_replace("n", " n", $option);

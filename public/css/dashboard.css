@@ -3,20 +3,35 @@
 	background-size: cover;
 	width: 100%;
 	height: 100%;
+	position: fixed;
+}
+
+#logo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
+#logo_title{
+	font-family: "Plus Jakarta Sans", serif;
+	font-optical-sizing: auto;
+	font-weight: 800;
+	font-style:italic
 }
 
 #header {
 	width: 100%;
 	height: 10vh;
 	display: flex;
-	justify-content: end;
+	justify-content: space-between;
 	align-items: center;
 	font-size: 18px;
 	font-weight: 500;
 	padding: 20px;
 }
 
-#avt {
+#avt, #logo_img {
 	border-radius: 50%;
 }
 
@@ -142,13 +157,6 @@
 	align-items: center;
 }
 
-#new_message {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	font-weight: 500;
-}
-
 #status_l, #status_b {
 	color: var(--rgb-dark-green);
 }
@@ -158,16 +166,18 @@
 	font-weight: 800;
 }
 
-#send_button{
+#send_button, #send_image{
 	background: none;
 	border: none;
 	outline: none;
 	cursor: pointer;
 }
 
-#send_button:hover path{
+#send_button:hover path, #send_image:hover path{
 	fill: #464447
 }
+
+
 
 #inbox{
 	width: 95%;
@@ -176,17 +186,18 @@
 	justify-self: center;
 	grid-template-rows: 10% 80% 10%;
 	background-color: var(--rgb--violet-blue);
-	border-radius: 10px;
+	border-radius: 20px;
 }
 
 #inbox_img{
-	width: 90%;
-	height: 95%;
-	border-radius: 10px;
-	background-image: url(../asset/inbox-image.jpeg);
+	width: 95%;
+	height: 96%;
+	border-radius: 20px;
+	background-image: url(../asset/inbox-image.png);
 	background-size: cover;
 	display: grid;
 	justify-self: center;
+	/* align-self: center; */
 
 }
 
@@ -200,7 +211,7 @@
 	font-weight: 800;
 	background-color: var(--rgb-dark-violet);
 	padding: 10px 20px;
-	border-radius: 10px 10px 0 0;
+	border-radius: 20px 20px 0 0;
 
 }
 
@@ -222,7 +233,7 @@
 .inbox-button{
 	display: grid;
 	align-items: center;
-	grid-template-columns: 1fr auto;
+	grid-template-columns: 1fr auto auto;
 	padding: 0 20px;
 	gap: 5px;
 }

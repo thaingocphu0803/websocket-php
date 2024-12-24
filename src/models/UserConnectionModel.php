@@ -24,6 +24,20 @@ class UserConnectionModel {
 		return false;
 	}
 
+	public function get_username_by_connection($connection_id){
+		$stmt = $this->db->query("SELECT username FROM user_connection WHERE connection_id = :connection_id LIMIT 1", [
+			':connection_id' => $connection_id
+		]);
+
+		$result = $this->db->fetch($stmt);
+
+		if($result){
+			return $result['username'];
+		}
+
+		return false;
+	}
+
 	public function save_user_connection($username, $connection_id, $is_online){
 		$user = $this->get_user_connection($username);
 

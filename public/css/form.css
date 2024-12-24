@@ -5,6 +5,7 @@
 	grid-auto-rows: 1fr;
 	justify-items: center;
 	align-items: center;
+	align-self: start;
 	border-radius: 20px;
 	border: var(--solid-1) var(--rgb-dark-grey);
 	background-image: url(../asset/login-background.png);

@@ -1,4 +1,5 @@
 <?php
+
 namespace MyApp;
 
 use MessageModel;
@@ -13,126 +14,160 @@ require_once __DIR__ . '/../models/MessageModel.php';
 require_once __DIR__ . '/../helpers/Validation.php';
 require_once __DIR__ . '/../models/RoomModel.php';
 
-class Chat implements MessageComponentInterface {
-    protected $userConnectionModel;
-    protected $clients;
-    protected $messageModel;
-    protected $validation;
-    protected $roomModel;
+class Chat implements MessageComponentInterface
+{
+	protected $userConnectionModel;
+	protected $clients;
+	protected $messageModel;
+	protected $validation;
+	protected $roomModel;
 
-    public function __construct() {
-        $this->clients = new \SplObjectStorage;
-        $this->userConnectionModel = new UserConnectionModel();
-        $this->messageModel =  new MessageModel();
-        $this->validation = new Validation();
-        $this->roomModel = new RoomModel();
-    }
+	public function __construct()
+	{
+		$this->clients = new \SplObjectStorage;
+		$this->userConnectionModel = new UserConnectionModel();
+		$this->messageModel =  new MessageModel();
+		$this->validation = new Validation();
+		$this->roomModel = new RoomModel();
+	}
 
-    public function onOpen(ConnectionInterface $conn) {
+	public function onOpen(ConnectionInterface $conn)
+	{
 
-        $this->clients->attach($conn);
-         
-        echo "New connection! ({$conn->resourceId})\n";
-    }
+		$this->clients->attach($conn);
 
-    public function onMessage(ConnectionInterface $from, $msg) {
-        $ojbMessage = json_decode($msg, true);
-        $connection_id = $from->resourceId;
+		echo "New connection! ({$conn->resourceId})\n";
+	}
 
-        if($ojbMessage["type"] == 'userConnect'){
-            $userConnect = $ojbMessage["userConnect"] ?? null ;
-            $result = $this->userConnectionModel->save_user_connection($userConnect, $connection_id, 1);
-            if(!$result) die;
+	public function onMessage(ConnectionInterface $from, $msg)
+	{
+		$ojbMessage = json_decode($msg, true);
+		$connection_id = $from->resourceId;
 
-            
-            foreach ($this->clients as $client){
-                if($from !== $client){
-
-                    $sendMessage = [
-                        'type' => $ojbMessage["type"],
-                        'username' => $ojbMessage["userConnect"],
-                        'isOnline' => 1,
-                    ];
-
-                    $client->send(json_encode($sendMessage));
-                }
-            }
-
-        }elseif ($ojbMessage["type"] == 'userDisconnect'){
-            $onlineUser = $ojbMessage['userDisconect'];
-            $result = $this->userConnectionModel->save_user_connection($onlineUser, $connection_id, 0);
-            if(!$result) die;
-
-            foreach ($this->clients as $client){
-                if($from !== $client){
-
-                    $sendMessage = [
-                        'type' => $ojbMessage["type"],
-                        'username' => $ojbMessage["userDisconect"],
-                        'isOnline' => 0,
-                    ];
-
-                    $client->send(json_encode($sendMessage));
-                }
-            }
-
-        }elseif ($ojbMessage["type"] == 'sendMessage'){
-            
-            $toUser = $ojbMessage['to'];
-            $receiver = $this->userConnectionModel->get_user_connection($toUser);
-            $mssg = $this->validation->clearInput($ojbMessage["message"]);
-
-            $room_status = $this->roomModel->check_room_status($ojbMessage["to"]);
-
-            if(!$room_status) die;
+		if ($ojbMessage["type"] == 'userConnect') {
+			$userConnect = $ojbMessage["userConnect"] ?? null;
+			$result = $this->userConnectionModel->save_user_connection($userConnect, $connection_id, 1);
+			if (!$result) die;
 
 
+			foreach ($this->clients as $client) {
+				if ($from !== $client) {
 
-            if($room_status['room'] === $ojbMessage["room"] && $room_status['stt'] === 'A') {
-                $is_read = "Y";
-            }else{
-                $is_read = "N";
-            }
+					$sendMessage = [
+						'type' => $ojbMessage["type"],
+						'username' => $ojbMessage["userConnect"],
+						'isOnline' => 1,
+					];
 
-            $messageData = [
-                'room' => $ojbMessage["room"],
-                'sender' => $ojbMessage["from"],
-                'receiver' => $ojbMessage["to"],
-                'mssg' => $mssg,
-                'is_read' => $is_read,
-                'create_at' => $ojbMessage["date"],          
-            ];
+					$client->send(json_encode($sendMessage));
+				}
+			}
+		} elseif ($ojbMessage["type"] == 'userDisconnect') {
+			$onlineUser = $ojbMessage['userDisconect'];
+			$result = $this->userConnectionModel->save_user_connection($onlineUser, 0, 0);
+			if (!$result) die;
 
-            $result = $this->messageModel->saveMessage($messageData);
+			foreach ($this->clients as $client) {
+				if ($from !== $client) {
 
-            if(!$result) die();
+					$sendMessage = [
+						'type' => $ojbMessage["type"],
+						'username' => $ojbMessage["userDisconect"],
+						'isOnline' => 0,
+					];
 
-            foreach ($this->clients as $client){
-                if($client->resourceId === $receiver['connection_id']){
+					$client->send(json_encode($sendMessage));
+				}
+			}
+		} elseif ($ojbMessage["type"] == 'sendMessage') {
 
-                    $sendMessage = [
-                        'type' => $ojbMessage["type"],
-                        'room' => $ojbMessage['room'],
-                        'date' => $ojbMessage['date'],
-                        'message' => $ojbMessage['message'],
-                    ];
+			$toUser = $ojbMessage['to'];
+			$receiver = $this->userConnectionModel->get_user_connection($toUser);
+			$mssg = $this->validation->clearInput($ojbMessage["message"]);
 
-                    $client->send(json_encode($sendMessage));
-                }
-            }
-        }
-    }
+			$room_status = $this->roomModel->check_room_status($ojbMessage["to"]);
 
-    public function onClose(ConnectionInterface $conn) {
-        // The connection is closed, remove it, as we can no longer send it messages
-        $this->clients->detach($conn);
+			if (!$room_status) die;
 
-        echo "Connection {$conn->resourceId} has disconnected\n";
-    }
 
-    public function onError(ConnectionInterface $conn, \Exception $e) {
-        echo "An error has occurred: {$e->getMessage()}\n";
 
-        $conn->close();
-    }           
+			if ($room_status['room'] === $ojbMessage["room"] && $room_status['stt'] === 'A') {
+				$is_read = "Y";
+			} else {
+				$is_read = "N";
+			}
+
+			$messageData = [
+				'room' => $ojbMessage["room"],
+				'sender' => $ojbMessage["from"],
+				'receiver' => $ojbMessage["to"],
+				'mssg' => $mssg,
+				'is_read' => $is_read,
+				'create_at' => $ojbMessage["date"],
+			];
+
+			$result = $this->messageModel->saveMessage($messageData);
+
+			if (!$result) die();
+
+			foreach ($this->clients as $client) {
+				if ($client->resourceId === $receiver['connection_id']) {
+
+					if ($is_read === "N") {
+						$client->send(json_encode([
+							'type' => 'unRead',
+							'sender' => $ojbMessage["from"]
+						]));
+					}
+
+					$sendMessage = [
+						'type' => $ojbMessage["type"],
+						'room' => $ojbMessage['room'],
+						'date' => $ojbMessage['date'],
+						'message' => $ojbMessage['message'],
+					];
+
+					$client->send(json_encode($sendMessage));
+				}
+			}
+		}
+	}
+
+	public function onClose(ConnectionInterface $conn)
+	{
+		// The connection is closed, remove it, as we can no longer send it messages
+
+		$from = $conn->resourceId;
+		
+		$username = $this->userConnectionModel->get_username_by_connection($from);
+		if (!$username) die;
+
+		$result = $this->userConnectionModel->save_user_connection($username, 0, 0);
+
+		if (!$result) die;
+
+		foreach ($this->clients as $client) {
+			if ($from !== $client) {
+
+				$sendMessage = [
+					'type' => 'userDisconnect',
+					'username' => $username,
+					'isOnline' => 0,
+				];
+
+				$client->send(json_encode($sendMessage));
+			}
+		}
+
+		$this->clients->detach($conn);
+
+		echo "Connection {$conn->resourceId} has disconnected\n";
+	}
+
+	public function onError(ConnectionInterface $conn, \Exception $e)
+	{
+		echo "An error has occurred: {$e->getMessage()}\n";
+
+		$conn->close();
+	}
 }
