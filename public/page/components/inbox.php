@@ -14,8 +14,10 @@
 	</div>
 
 	<div class="inbox-body" id="inbox_box"></div>
-
 	<div class="inbox-button">
+		<!-- preview image -->
+		<div id="previewImage"></div>
+
 		<!-- message -->
 		<textarea type="text" id="input_message" placeholder="Chatting..."></textarea>
 

@@ -46,4 +46,10 @@ class InboxController
 			$this->util->sendData(true, 'set_status successfully');
 		}
 	}
+
+	public function upload_message_images()
+	{
+		$files = $_FILES['images'];
+		var_dump($files);
+	}
 }

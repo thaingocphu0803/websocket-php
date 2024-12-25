@@ -14,7 +14,6 @@
 
 <body>
 	<div id="app"></div>
-
 	<script src="/js/app.js" defer></script>
 	<script src="/js/event.js" defer></script>
 	<script src="/js/util.js" defer></script>

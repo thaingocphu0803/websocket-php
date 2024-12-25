@@ -17,7 +17,7 @@ const listApi= async()=>{
 		const query = search.value.toLowerCase();
 
 		const filterData =  data.data.list.filter((item)=>{
-			return item.fullname.toLowerCase().includes(query);
+			return item.partner_fullname.toLowerCase().includes(query);
 		})
 
 		renderList (filterData);
@@ -44,4 +44,3 @@ const renderList = (data) =>{
 		`
 	});
 }
-

@@ -73,6 +73,9 @@ switch ($router->path) {
 		break;
 	case 'set-room-status':
 		$router->inbox->set_room_status();
+		break;
+	case 'upload-message-images':
+		$router->inbox->upload_message_images();
 	default:
 		break;
 }

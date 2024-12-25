@@ -236,6 +236,7 @@
 	grid-template-columns: 1fr auto auto;
 	padding: 0 20px;
 	gap: 5px;
+	position: relative;
 }
 
 #input_message{
@@ -302,4 +303,40 @@
 	background-color: var(--rgb-neon-red);
 	border-radius: 50%;
 	text-align: center;
+}
+/* upload image*/
+#previewImage{
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	position: absolute;
+    bottom: 4em;
+    padding: 10px;
+    color: white;
+    z-index: 1; 
+	width: 100%;
+	height: auto;
+}
+
+.upload-image-container{
+	width: auto;
+	height: auto;
+	position: relative;
+	display: flex;
+	border: var(--solid-2) var(--rgb-grey-violet);
+}
+
+.delete-container-image{
+	position: absolute;
+	top: 1;
+	left: 90%;
+	z-index: 1;
+	cursor: pointer;
+}
+.delete-container-image:hover path{
+	fill: var(--rgb-neon-red);
+}
+.image-upload{
+	justify-self: center;
+	align-self: center;
 }

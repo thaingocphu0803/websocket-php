@@ -1,15 +1,29 @@
 let currentOnline = null;
 let currentRoom = null;
 
-const sendMessage = () => {
+const sendMessage = async() => {
 	const from = document.getElementById("username").textContent;
 	const text = document.getElementById("input_message").value.trim();
 	const to = document.getElementById("partner_username").textContent;
+
+	const inputFiles = document.getElementById('inbox_image');
+	const imageArray = inputFiles.files;
+	const formData = appendFormData(imageArray);
+
+
+	if (!text && imageArray.length === 0 ) return;
+
+	clearPreviewImage();
+	
+	const data = await handleMessageImage(formData);
+	console.log(data);
+
+
 	let sendDate = getSendDate();
 
-	const room = [from, to].sort().join("_");
+	//handle image to send
 
-	if (!text) return;
+	const room = [from, to].sort().join("_");
 
 	const message = {
 		type: "sendMessage",
@@ -90,12 +104,15 @@ const getSendDate = () => {
 const renderMessage = (date, message, position) => {
 	let iboxComponent = document.getElementById("inbox_box");
 
-	iboxComponent.innerHTML += `
-		<div class="message-component ${position}">
-			<span id="time_send" class="datetime right">${date}</span>
-			<span id="message_send" class="left">${message}</span>
-		</div>
-	`;
+	if(message){
+		iboxComponent.innerHTML += `
+			<div class="message-component ${position}">
+				<span id="time_send" class="datetime right">${date}</span>
+				<span id="message_send" class="left">${message}</span>
+			</div>
+		`;
+	}
+
 
 	scollToBottom();
 };
@@ -224,4 +241,16 @@ const resetNotification = (element) => {
 	if(!Notification.classList.contains('hidden')){
 		Notification.classList.add('hidden');
 	}
+}
+
+const handleMessageImage = async(formData) => {
+
+	const response = await fetch(`/${endpoint}/upload-message-images`, {
+		method: 'post',
+		body: formData
+	})
+
+	const data = await response.json();
+
+	return data;
 }

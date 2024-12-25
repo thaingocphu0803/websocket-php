@@ -83,9 +83,7 @@ const Navigate = async (pathname) => {
 
 					//handle upload image
 					document.getElementById('inbox_image').addEventListener('change', (event)=> {
-
-						const files = event
-						console.log(event);
+						handleUploadImages(event);
 					})
 				}
 				break;
