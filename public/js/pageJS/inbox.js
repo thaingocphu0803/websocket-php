@@ -5,10 +5,18 @@ const sendMessage = async() => {
 	const from = document.getElementById("username").textContent;
 	const text = document.getElementById("input_message").value.trim();
 	const to = document.getElementById("partner_username").textContent;
+	const room = [from, to].sort().join("_")
 
 	const inputFiles = document.getElementById('inbox_image');
 	const imageArray = inputFiles.files;
-	const formData = appendFormData(imageArray);
+	
+
+	const formData = new FormData();
+	formData.append('room', room)
+
+	for(let i = 0; i < imageArray.length; i++){
+		formData.append(`images[]`, imageArray[i]);
+	}
 
 
 	if (!text && imageArray.length === 0 ) return;
@@ -16,15 +24,12 @@ const sendMessage = async() => {
 	clearPreviewImage();
 	
 	const data = await handleMessageImage(formData);
-	console.log(data);
+	console.log(data.data.listImage);
 
 
 	let sendDate = getSendDate();
 
 	//handle image to send
-
-	const room = [from, to].sort().join("_");
-
 	const message = {
 		type: "sendMessage",
 		room,

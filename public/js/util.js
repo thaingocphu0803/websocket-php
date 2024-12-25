@@ -53,14 +53,3 @@ const clearInvalidStyle = () => {
 		element.classList.remove("input-invalid");
 	});
 };
-
-
-const appendFormData	 = (data) => {
-	const formData = new FormData();
-
-	for(let i = 0; i < data.length; i++){
-		formData.append(`images[]`, data[i]);
-	}
-
-	return formData;
-}

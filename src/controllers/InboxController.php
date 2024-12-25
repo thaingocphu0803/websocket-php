@@ -1,7 +1,11 @@
 <?php
+require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../models/MessageModel.php';
 require_once __DIR__ . '/../models/RoomModel.php';
 require_once __DIR__ . '/../helpers/Util.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use Cloudinary\Cloudinary;
 
 class InboxController
 {
@@ -49,7 +53,40 @@ class InboxController
 
 	public function upload_message_images()
 	{
-		$files = $_FILES['images'];
-		var_dump($files);
+		// const CLOUD_NAME = 'corn-chat';
+		// const CLOUD_API_KEY = '956798166689264';
+		// const CLOUD_API_SECRET = 'iYnIKYkuG4vxR7XBrZCrE5JIgsE';
+		$cloudinary = new Cloudinary([
+			'cloud' => [
+				'cloud_name' => CLOUD_NAME,
+				'api_key'    => CLOUD_API_KEY,
+				'api_secret' => CLOUD_API_SECRET,
+			],
+		]);
+
+		// $cloudinary->uploadApi()->upload();
+
+		if($_SERVER['REQUEST_METHOD'] != 'POST') {
+			$this->util->sendData(false, 'Incorrect request format');
+		};
+
+		if(!isset($_FILES['images']) || empty($_POST['room'])){
+			$this->util->sendData(false, 'upload failed');
+		};
+
+		$files = $_FILES['images']["tmp_name"];
+		$room = $_POST['room'];
+		
+		$listImage = [];
+
+		foreach( $files as $file){
+			$result = $cloudinary->uploadApi()->upload($file, [
+				'folder' => $room
+			]);
+
+			$listImage[] = $result['secure_url'];
+		}
+
+		$this->util->sendData(true, 'set_status successfully', ['listImage' => $listImage]);
 	}
 }
