@@ -17,7 +17,7 @@ class UserModel {
 
 		$user = $this->db->fetch($stmt);
 
-		if(!isset($user)) return false;
+		if(empty($user)) return false;
 		
 		if(isset($password) && !password_verify($password, $user['pssw'])) return false;
 

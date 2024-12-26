@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="icon" href="./asset/logo.jpeg" type="image/png">
+	<link rel="icon" href="./asset/logo.webp" type="image/png">
 	<link rel="stylesheet">
 	<link rel="stylesheet" href="./css/style.css">
 	<link rel="stylesheet" href="./css/form.css">
@@ -14,6 +14,11 @@
 
 <body>
 	<div id="app"></div>
+
+	<audio id="notify_sound" preload="metadata">
+		<source src="./asset/notification.mp3"  type="audio/mp3">
+	</audio>
+
 	<script src="/js/app.js" defer></script>
 	<script src="/js/event.js" defer></script>
 	<script src="/js/util.js" defer></script>

@@ -1,31 +1,32 @@
 let currentOnline = null;
 let currentRoom = null;
 
-const sendMessage = async() => {
+const sendMessage = async () => {
 	const from = document.getElementById("username").textContent;
 	const text = document.getElementById("input_message").value.trim();
 	const to = document.getElementById("partner_username").textContent;
-	const room = [from, to].sort().join("_")
+	const room = [from, to].sort().join("_");
 
-	const inputFiles = document.getElementById('inbox_image');
+	const inputFiles = document.getElementById("inbox_image");
 	const imageArray = inputFiles.files;
-	
+
+	console.log(imageArray.length);
 
 	const formData = new FormData();
-	formData.append('room', room)
+	formData.append("room", room);
 
-	for(let i = 0; i < imageArray.length; i++){
-		formData.append(`images[]`, imageArray[i]);
-	}
+	if (!text && imageArray.length === 0) return;
 
 
-	if (!text && imageArray.length === 0 ) return;
+	if(imageArray.length > 0){
+		for (let i = 0; i < imageArray.length; i++) {
+			formData.append(`images[]`, imageArray[i]);
+		}
+	}	
 
 	clearPreviewImage();
-	
-	const data = await handleMessageImage(formData);
-	console.log(data.data.listImage);
 
+	const listImage = imageArray.length > 0 ? await handleMessageImage(formData) : [];
 
 	let sendDate = getSendDate();
 
@@ -37,35 +38,36 @@ const sendMessage = async() => {
 		to,
 		date: sendDate,
 		message: text,
+		listImage,
 	};
 
 	socket.send(JSON.stringify(message));
 	document.getElementById("input_message").value = "";
 
-	renderMessage(sendDate, text, "right");
+	renderMessage("right", sendDate, text, listImage);
 };
 
 socket.onmessage = (event) => {
-
 	const objMessage = JSON.parse(event.data);
-	if(objMessage.type === 'unRead'){
-		const notification = document.getElementById(`${objMessage.sender}`).querySelector(".notify");
+	if (objMessage.type === "unRead") {
+		const notification = document
+			.getElementById(`${objMessage.sender}`)
+			.querySelector(".notify");
 
-			console.log(parseInt(notification.textContent))
-			notification.textContent = parseInt(notification.textContent || 0) + 1;
-			
-			if(notification.classList.contains('hidden')){
-				notification.classList.remove('hidden');
-			}
+		notification.textContent = parseInt(notification.textContent || 0) + 1;
 
-
+		if (notification.classList.contains("hidden")) {
+			notification.classList.remove("hidden");
+			playNotification();
+		}
 	} else if (objMessage.type === "sendMessage") {
 		const from = document.getElementById("username").textContent;
 		const to = document.getElementById("partner_username").textContent;
 		currentRoom = [from, to].sort().join("_");
 
 		if (objMessage.room === currentRoom) {
-			renderMessage(objMessage.date, objMessage.message, "left");
+			renderMessage("left", objMessage.date, objMessage.message, objMessage.listImage);
+			playNotification();
 		}
 	} else if (objMessage.type === "userConnect" && objMessage.isOnline === 1) {
 		const userStatus = getUserStatus(objMessage.username);
@@ -106,10 +108,10 @@ const getSendDate = () => {
 	return formattedDate;
 };
 
-const renderMessage = (date, message, position) => {
+const renderMessage = (position, date, message = null, image = []) => {
 	let iboxComponent = document.getElementById("inbox_box");
 
-	if(message){
+	if (message) {
 		iboxComponent.innerHTML += `
 			<div class="message-component ${position}">
 				<span id="time_send" class="datetime right">${date}</span>
@@ -117,7 +119,12 @@ const renderMessage = (date, message, position) => {
 			</div>
 		`;
 	}
-
+	if (image.length > 0) {
+		for (let i = 0; i < image.length; i++)
+			iboxComponent.innerHTML += `
+			<img class="image-${position}" src="${atob(image[i])}" alt="message image" width="150px" height="130px">
+		`;
+	}
 
 	scollToBottom();
 };
@@ -125,14 +132,13 @@ const renderMessage = (date, message, position) => {
 //handle to show inbox box
 
 const showInboxBox = async (partnerFullName, isOnline, partnerUserName) => {
-
 	const from = document.getElementById("username").textContent;
 
 	const room = [from, partnerUserName].sort().join("_");
 	currentRoom = room;
 
-	window.history.replaceState({}, '',`/dashboard#${partnerUserName}`)
-	
+	window.history.replaceState({}, "", `/dashboard#${partnerUserName}`);
+
 	const status = await setRoomStatus(room, "A", from);
 	if (!status) return;
 
@@ -168,7 +174,7 @@ const showInboxBox = async (partnerFullName, isOnline, partnerUserName) => {
 const closeInboxBox = async () => {
 	const from = document.getElementById("username").textContent;
 
-	window.history.replaceState({}, '',`/dashboard`)
+	window.history.replaceState({}, "", `/dashboard`);
 
 	const status = await setRoomStatus(currentRoom, "X", from);
 	if (!status) return;
@@ -199,10 +205,13 @@ const renderListMessage = async (room, from) => {
 		if (!data.status) return;
 
 		data.data.listMessage.forEach((message) => {
+
+				let img_url = message.img_urls ? message.img_urls.split(',') : [];
+
 			if (message.sender === from) {
-				renderMessage(message.create_at, message.mssg, "right");
+				renderMessage("right", message.create_at, message.mssg, img_url);
 			} else {
-				renderMessage(message.create_at, message.mssg, "left");
+				renderMessage("left", message.create_at, message.mssg, img_url);
 			}
 		});
 	} catch (err) {
@@ -231,31 +240,37 @@ const setRoomStatus = async (room, status, user_open) => {
 };
 
 const scollToBottom = () => {
-	const inboxBox = document.getElementById('inbox_box');
+	const inboxBox = document.getElementById("inbox_box");
 	inboxBox.scrollTop = inboxBox.scrollHeight;
-}
+};
 
 // reset number of notification to 0
 const resetNotification = (element) => {
 	const Notification = element.querySelector(".notify");
-	
-	if(!Notification) return;
+
+	if (!Notification) return;
 
 	Notification.textContent = 0;
 
-	if(!Notification.classList.contains('hidden')){
-		Notification.classList.add('hidden');
+	if (!Notification.classList.contains("hidden")) {
+		Notification.classList.add("hidden");
 	}
-}
+};
 
-const handleMessageImage = async(formData) => {
+const handleMessageImage = async (formData) => {
 
-	const response = await fetch(`/${endpoint}/upload-message-images`, {
-		method: 'post',
-		body: formData
-	})
+	try {
+		const response = await fetch(`/${endpoint}/upload-message-images`, {
+			method: "post",
+			body: formData,
+		});
 
-	const data = await response.json();
+		const data = await response.json();
 
-	return data;
-}
+		if(!data) return
+
+		return data.data.listImage;
+	} catch (err) {
+		console.log(err);
+	}
+};

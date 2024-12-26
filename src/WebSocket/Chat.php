@@ -104,6 +104,7 @@ class Chat implements MessageComponentInterface
 				'mssg' => $mssg,
 				'is_read' => $is_read,
 				'create_at' => $ojbMessage["date"],
+				'list_image' => $ojbMessage["listImage"]
 			];
 
 			$result = $this->messageModel->saveMessage($messageData);
@@ -119,12 +120,12 @@ class Chat implements MessageComponentInterface
 							'sender' => $ojbMessage["from"]
 						]));
 					}
-
 					$sendMessage = [
 						'type' => $ojbMessage["type"],
 						'room' => $ojbMessage['room'],
 						'date' => $ojbMessage['date'],
 						'message' => $ojbMessage['message'],
+						'listImage' => $ojbMessage['listImage']
 					];
 
 					$client->send(json_encode($sendMessage));

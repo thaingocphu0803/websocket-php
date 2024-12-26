@@ -50,7 +50,7 @@ class UserConnectionModel {
 
 			 return $stmt->rowCount() > 0;
 		}else{
-			$stmt =  $this->db->query("UPDATE user_connection SET is_online = :is_online, connection_id = :connection_id WHERE username =:username", [
+			$stmt =  $this->db->query("UPDATE user_connection SET is_online = :is_online, connection_id = :connection_id, updated_at = CURRENT_TIMESTAMP WHERE username =:username", [
 				':username' => $username,
 				':is_online' => $is_online,
 				':connection_id' => $connection_id

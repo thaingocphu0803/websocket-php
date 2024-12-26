@@ -82,4 +82,8 @@ class DB
 	{
 		return $this->conn->rollBack();
 	}
+
+	public function last_insert_id(){
+		return $this->conn->lastInsertId();
+	}
 }

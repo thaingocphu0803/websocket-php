@@ -17,7 +17,7 @@ $authInfor = $auth->checkAuth();
 	<div class="dropdown">
 		<!-- start-dropdown-btn -->
 		<div id="dropdown_btn" onclick="handleDropdown()">
-			<img src="../../asset/logo.jpeg" alt="user's avatar" id="avt" width="50px" height="50px">
+			<img src="../../asset/logo.webp" alt="user's avatar" id="avt" width="50px" height="50px">
 			<div id="fullname"><?= $authInfor->fullname ?></div>
 			<span id="username" class="hidden"><?= $authInfor->username ?></span>
 			<svg id="icon-up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20px" height="20px">

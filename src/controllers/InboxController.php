@@ -53,9 +53,6 @@ class InboxController
 
 	public function upload_message_images()
 	{
-		// const CLOUD_NAME = 'corn-chat';
-		// const CLOUD_API_KEY = '956798166689264';
-		// const CLOUD_API_SECRET = 'iYnIKYkuG4vxR7XBrZCrE5JIgsE';
 		$cloudinary = new Cloudinary([
 			'cloud' => [
 				'cloud_name' => CLOUD_NAME,
@@ -64,29 +61,35 @@ class InboxController
 			],
 		]);
 
-		// $cloudinary->uploadApi()->upload();
 
 		if($_SERVER['REQUEST_METHOD'] != 'POST') {
 			$this->util->sendData(false, 'Incorrect request format');
 		};
 
 		if(!isset($_FILES['images']) || empty($_POST['room'])){
-			$this->util->sendData(false, 'upload failed');
+			$this->util->sendData(false, 'upload images failed');
 		};
 
 		$files = $_FILES['images']["tmp_name"];
+		
 		$room = $_POST['room'];
 		
 		$listImage = [];
 
 		foreach( $files as $file){
 			$result = $cloudinary->uploadApi()->upload($file, [
-				'folder' => $room
+				'folder' => $room,
+				'transformation' => [
+					'width' => 500,
+					'height' => 500,
+					'crop' => 'pad',
+					'gravity' => 'center'
+				]
 			]);
 
-			$listImage[] = $result['secure_url'];
+			$listImage[] = base64_encode($result['secure_url']);
 		}
 
-		$this->util->sendData(true, 'set_status successfully', ['listImage' => $listImage]);
+		$this->util->sendData(true, 'upload images successfully', ['listImage' => $listImage]);
 	}
 }

@@ -80,11 +80,6 @@ const Navigate = async (pathname) => {
 
 				if(partner && Object.keys(partner).length > 0){
 					showInboxBox(partner.FullName, partner.isOnline, partner.Username);
-
-					//handle upload image
-					document.getElementById('inbox_image').addEventListener('change', (event)=> {
-						handleUploadImages(event);
-					})
 				}
 				break;
 			default:

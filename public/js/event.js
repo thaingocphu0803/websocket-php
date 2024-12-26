@@ -92,6 +92,7 @@ const handleUploadImages = (event) => {
 };
 
 const handleImagesReader =  (array) => {
+	clearPreviewImage();
 	array.forEach((image) => {
 		const reader = new FileReader();
 		reader.onload = (event) => {
@@ -134,4 +135,9 @@ const deleteUploadImage = (id) => {
 const clearPreviewImage = () => {
 	const previewImage = document.getElementById("previewImage");
 	previewImage.innerHTML = "";
+}
+
+const playNotification = () => {
+	const audio = document.getElementById("notify_sound");
+	audio.play();
 }
