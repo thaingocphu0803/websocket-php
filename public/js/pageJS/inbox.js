@@ -10,8 +10,6 @@ const sendMessage = async () => {
 	const inputFiles = document.getElementById("inbox_image");
 	const imageArray = inputFiles.files;
 
-	console.log(imageArray.length);
-
 	const formData = new FormData();
 	formData.append("room", room);
 
@@ -42,7 +40,9 @@ const sendMessage = async () => {
 	};
 
 	socket.send(JSON.stringify(message));
+	
 	document.getElementById("input_message").value = "";
+	inputFiles.value = '';
 
 	renderMessage("right", sendDate, text, listImage);
 };
