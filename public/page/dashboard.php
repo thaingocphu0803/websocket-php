@@ -1,9 +1,11 @@
 <div id="container">
-	<!-- start-header -->
 	<?php
+	//confirm form
+	include_once __DIR__ . '/components/confirm.php';
+	
+	//header 
 	require_once __DIR__ . '/components/header.php';
 	?>
-	<!-- end-header -->
 
 	<!-- start-main -->
 	<div id="main">

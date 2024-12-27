@@ -107,7 +107,7 @@ const renderPreviewImage = (event, arrayItem) => {
 	previewImage.innerHTML += `
 		<div id="${arrayItem.lastModified}" class="upload-image-container">
 			<img class="image-upload" src="${event.target.result}" alt="" width="100px" height="100px">
-			<span class="delete-container-image" onclick="deleteUploadImage('${arrayItem.lastModified}')">
+			<span class="delete-btn" onclick="deleteUploadImage('${arrayItem.lastModified}')">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="16px" height="16px">
 					<path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM175 175c9.4-9.4 24.6-9.4 33.9 0l47 47 47-47c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-47 47 47 47c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-47-47-47 47c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l47-47-47-47c-9.4-9.4-9.4-24.6 0-33.9z" />
 				</svg> 
@@ -138,6 +138,35 @@ const clearPreviewImage = () => {
 }
 
 const playNotification = () => {
-	const audio = document.getElementById("notify_sound");
-	audio.play();
+	
+	if(playSound){
+		const audio = document.getElementById("notify_sound");
+		audio.play();	
+	}
+}
+
+// handle confirm turn on notification sound
+const closeConfirm = () => {
+	const confirmModal = document.getElementById('confirm_modal');
+
+	if(!confirmModal.classList.contains('hidden')){
+		confirmModal.classList.add('hidden');
+	}
+}
+
+const showConfirmModal = () => {
+
+	setTimeout(()=> {
+		const confirmModal = document.getElementById('confirm_modal');
+	 	document.getElementById('confirm_message').textContent = "Would you like to turn on notification sounds?"
+
+		if(confirmModal.classList.contains('hidden')){
+			confirmModal.classList.remove('hidden');
+		}
+	
+		document.getElementById('play_sound').addEventListener('click', ()=> {
+			playSound = true;
+		})
+	}, 1000)
+
 }

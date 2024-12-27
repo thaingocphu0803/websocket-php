@@ -1,6 +1,3 @@
-let currentOnline = null;
-let currentRoom = null;
-
 const sendMessage = async () => {
 	const from = document.getElementById("username").textContent;
 	const text = document.getElementById("input_message").value.trim();
@@ -23,6 +20,8 @@ const sendMessage = async () => {
 	}	
 
 	clearPreviewImage();
+	// clear input message after send
+	document.getElementById("input_message").value = "";
 
 	const listImage = imageArray.length > 0 ? await handleMessageImage(formData) : [];
 
@@ -41,10 +40,11 @@ const sendMessage = async () => {
 
 	socket.send(JSON.stringify(message));
 	
-	document.getElementById("input_message").value = "";
+	renderMessage("right", sendDate, text, listImage);
+
+	// clear input file after sen
 	inputFiles.value = '';
 
-	renderMessage("right", sendDate, text, listImage);
 };
 
 socket.onmessage = (event) => {
@@ -67,7 +67,7 @@ socket.onmessage = (event) => {
 
 		if (objMessage.room === currentRoom) {
 			renderMessage("left", objMessage.date, objMessage.message, objMessage.listImage);
-			playNotification();
+				playNotification();
 		}
 	} else if (objMessage.type === "userConnect" && objMessage.isOnline === 1) {
 		const userStatus = getUserStatus(objMessage.username);

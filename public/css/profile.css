@@ -1,0 +1,79 @@
+#profile_container {
+	background-image: url(../asset/background.webp);
+	background-size: cover;
+	width: 100%;
+	height: 100vh;
+	position: relative;
+	display: grid;
+	grid-template-rows: auto 1fr;
+}
+
+#my_avatar{
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+}
+
+#form_group_profile{
+	display: grid;
+	grid-template-rows: auto 1fr;
+	justify-content: center;
+	gap: 2em;
+}
+.avt-profile{
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+	justify-content: center;
+	align-items: center;
+	padding: 20px;
+}
+
+#form_profile{
+	display: flex;
+	flex-direction: column;
+	gap: 2em;
+	padding: 20px;
+}
+
+.form_profile_input{
+	display: flex;
+	justify-self: stretch;
+	justify-content: space-between;
+	margin: 0 2rem;
+	gap: 16px;
+	font-weight: 800;
+	font-size: 16px;
+	align-items: center;
+}
+
+#fullname_profile{
+	border: unset;
+	border-bottom: var(--solid-1) black;
+	outline: unset;
+	background: unset;
+	text-align: center;
+}
+
+.flex-bottom{
+	justify-self: flex-end;
+}
+
+.fullname-group, .edit-fullname-group{
+	display: grid;
+	grid-template-columns: 3fr 1fr;
+	justify-items: center;
+	align-items: center;
+	gap: 1em;
+}
+
+#update_avt_btn, #update_fullname_btn{
+	cursor: pointer;
+}
+
+#update_fullname_btn:hover path{
+	fill: #464447
+}
+.user-fullname{
+	width: 200px
+}

@@ -13,13 +13,15 @@
 	color: var(--rgb-dark-grey);
 }
 
-#username, #password, #confirm_password, #firstname, #lastname {
-	padding: 10px;
-	border-radius: 10px;
-	border: var(--solid-1) whitesmoke;
-	outline: var(--solid-1)  whitesmoke;
-	width: 250px;
-
+.from-authen-input{
+	display: flex;
+	justify-self: stretch;
+	justify-content: stretch;
+	margin: 0 2rem;
+	gap: 16px;
+	font-weight: 800;
+	font-size: 16px;
+	align-items: center;
 }
 
 #remember{
@@ -47,11 +49,6 @@
 	border: var(--solid-2) whitesmoke;
 }
 
-
-#username:focus, #password:focus, #confirm_password:focus, #firstname:focus, #lastname:focus {
-	outline:var(--solid-2) var(--rgb-blue);
-
-}
 
 #full_name{
 	display: flex;

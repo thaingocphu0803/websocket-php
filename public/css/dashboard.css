@@ -3,7 +3,8 @@
 	background-size: cover;
 	width: 100%;
 	height: 100%;
-	position: fixed;
+	position: relative;
+	display: grid;
 }
 
 #logo {
@@ -197,8 +198,6 @@
 	background-size: cover;
 	display: grid;
 	justify-self: center;
-	/* align-self: center; */
-
 }
 
 .inbox-header{
@@ -326,14 +325,14 @@
 	border: var(--solid-2) var(--rgb-grey-violet);
 }
 
-.delete-container-image{
+.delete-btn{
 	position: absolute;
 	top: 1;
 	left: 90%;
 	z-index: 1;
 	cursor: pointer;
 }
-.delete-container-image:hover path{
+.delete-btn:hover path{
 	fill: var(--rgb-neon-red);
 }
 .image-upload{

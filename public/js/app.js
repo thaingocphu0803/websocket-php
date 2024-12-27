@@ -2,7 +2,12 @@
 
 const endpoint = "endpoint.php";
 const pathname = location.pathname.toLowerCase();
+
+let currentOnline = null;
+let currentRoom = null;
 let partner = {};
+let playSound = false;
+
 
 //generate socket connection
 
@@ -36,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 				partner.Username = data.data.partnerUserName;
 			}
 
-			Navigate("/dashboard");
+			Navigate(pathname != '/login' ? pathname : '/dashboard');
 
 		}
 	} catch (err) {
@@ -55,7 +60,10 @@ const Navigate = async (pathname) => {
 	  param 1: path
 	  param 2: id   
 	*/
-	window.history.pushState({ path: pathname }, "", pathname);
+
+	console.log(pathname);
+
+	window.history.pushState({ path: pathname }, "", `${pathname}`);
 
 	const param = pathname.split("/");
 
@@ -77,10 +85,15 @@ const Navigate = async (pathname) => {
 			case "dashboard":
 				app.innerHTML = await response.text();
 				listApi();
+				
+				if(!playSound) showConfirmModal();
 
 				if(partner && Object.keys(partner).length > 0){
 					showInboxBox(partner.FullName, partner.isOnline, partner.Username);
 				}
+				break;
+			case "my-profile":
+				app.innerHTML = await response.text();
 				break;
 			default:
 				break;

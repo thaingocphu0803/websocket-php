@@ -23,18 +23,20 @@
 	box-sizing: border-box;
 }
 
-#form-container{
+#form_container{
 	width: 100%;
 	height: 100vh;
 	display: grid;
 	justify-content: center;
 	align-items: center;
 	background-size: cover;
+	position: relative;
 }
 
-.from-input, .check-box{
+.check-box{
 	display: flex;
 	justify-self: stretch;
+	justify-content: stretch;
 	margin: 0 2rem;
 	gap: 16px;
 	font-weight: 800;
@@ -89,7 +91,7 @@
 #alert_modal{
 	border-radius: 10px;
 	align-self: start;
-	width: 100%;
+	width: 420px;
 	height: 100px;
 	font-size: 24px;
 	font-weight: 800;
@@ -98,6 +100,63 @@
 	justify-content: center;
 	align-items: center;
 	gap: 5px;
+	position: absolute;
+	justify-self: center;
+	top: 1em;
+}
+
+#confirm_modal{
+	display: grid;
+	height: 120px;
+	width: 420px;
+	background-color: var(--rgb-grey-violet);
+	gap: 10px;
+	font-size: 20px;
+	font-weight: 500;
+	border-radius: 10px;
+	grid-template-rows: auto;
+	position: absolute;
+	justify-self: center;
+	top: 10px;
+	padding: 5px;
+}
+
+#close_confirm{
+	border: unset;
+	background-color: unset;
+	outline: unset;
+	justify-self: end;
+	cursor: pointer;
+}
+
+#close_confirm:hover path{
+	fill: var(--rgb-neon-red);
+}
+
+.group-btn{
+	display: flex;
+	justify-content: space-between;
+	padding: 0 2em;
+}
+
+.confirm_btn{
+	padding: 5px 20px;
+	font-size: 16px;
+	font-weight: 600;
+	border-radius: 10px;
+	border: unset;
+	align-items: center;
+	cursor: pointer;
+}
+
+.confirm_btn:hover{
+	background-color: var( --rgb-silver);
+	color: var(--rgb-dark-grey);
+	border: var(--solid-1) var(--rgb-dark-violet);
+
+}
+#confirm_message{
+	justify-self: center;
 }
 
 .success{
@@ -162,4 +221,24 @@
 
 .input-file{
 	display: none;
+}
+
+a{
+	text-decoration: none;
+	color: unset;
+}
+
+
+.input-form {
+	padding: 10px;
+	border-radius: 10px;
+	border: var(--solid-1) whitesmoke;
+	outline: var(--solid-1)  whitesmoke;
+	width: 250px;
+
+}
+
+.input-form:hover {
+	outline:var(--solid-2) var(--rgb-blue);
+
 }
