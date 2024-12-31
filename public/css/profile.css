@@ -53,18 +53,17 @@
 	outline: unset;
 	background: unset;
 	text-align: center;
+	padding: 10px;
+	font-size: large;
+	font-weight: 800;
 }
 
 .flex-bottom{
 	justify-self: flex-end;
 }
 
-.fullname-group, .edit-fullname-group{
-	display: grid;
-	grid-template-columns: 3fr 1fr;
-	justify-items: center;
-	align-items: center;
-	gap: 1em;
+.edit-fullname-group{
+	position: relative;
 }
 
 #update_avt_btn, #update_fullname_btn{
@@ -74,6 +73,21 @@
 #update_fullname_btn:hover path{
 	fill: #464447
 }
-.user-fullname{
-	width: 200px
+
+.fullname-btn-group{
+	position: absolute;
+	left: 100%;
+	bottom: 0;
+	display: flex;
+	gap: 10px;
+	flex-wrap: nowrap;
+	align-items: center;
+	margin-left: 1em;
+}
+
+.edit-fullname-btn{
+	padding: 5px 10px;
+	border-radius: 10px;
+	border: unset;
+	font-size: 16px;
 }
