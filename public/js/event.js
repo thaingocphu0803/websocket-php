@@ -139,7 +139,7 @@ const clearPreviewImage = () => {
 
 const playNotification = () => {
 	
-	if(playSound){
+	if(window.localStorage.getItem('playSound') === true){
 		const audio = document.getElementById("notify_sound");
 		audio.play();	
 	}
@@ -154,7 +154,7 @@ const closeConfirm = () => {
 	}
 }
 
-const showConfirmModal = () => {
+const showConfirmPlaySound = () => {
 
 	setTimeout(()=> {
 		const confirmModal = document.getElementById('confirm_modal');
@@ -164,8 +164,8 @@ const showConfirmModal = () => {
 			confirmModal.classList.remove('hidden');
 		}
 	
-		document.getElementById('play_sound').addEventListener('click', ()=> {
-			playSound = true;
+		document.getElementById('yes').addEventListener('click', ()=> {
+			window.localStorage.setItem('playSound', true)
 		})
 	}, 1000)
 

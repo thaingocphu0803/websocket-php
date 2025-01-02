@@ -68,8 +68,8 @@ const validateRegister = (input) => {
 	let message = null;
 
 	const RegExp = {
-		fistname: /^[\p{L}]+$/u,
-		lastname: /^[\p{L}]+$/u,
+		fistname: /^[\p{L} ]+$/u,
+		lastname: /^[\p{L} ]+$/u,
 		username: /^[a-zA-Z0-9._]{6,}$/,
 		password:
 			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
@@ -98,23 +98,23 @@ const validateRegister = (input) => {
 		handleInvalid(input.confirmPass);
 		return setError(message);
 	} else if (!RegExp.fistname.test(input.fistname.value)) {
-		message = "First name is incorrect format";
+		message = "The first name is incorrect format";
 		handleInvalid(input.fistname);
 		return setError(message);
 	} else if (!RegExp.lastname.test(input.lastname.value)) {
-		message = "Last name is incorrect format";
+		message = "The last name is incorrect format";
 		handleInvalid(input.lastname);
 		return setError(message);
 	} else if (!RegExp.username.test(input.username.value)) {
-		message = "Username is incorrect format";
+		message = "The username is incorrect format";
 		handleInvalid(input.username);
 		return setError(message);
 	} else if (!RegExp.password.test(input.password.value)) {
-		message = "Password is incorrect format";
+		message = "The password is incorrect format";
 		handleInvalid(input.password);
 		return setError(message);
 	} else if (input.password.value !== input.confirmPass.value) {
-		message = "Confirm password is not matched";
+		message = "The confirm password is not matched";
 		handleInvalid(input.confirmPass);
 		return setError(message);
 	}

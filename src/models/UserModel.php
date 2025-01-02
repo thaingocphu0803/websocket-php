@@ -58,4 +58,26 @@ class UserModel {
 		return $result;
 	}
 
+	
+	public function update_fullname($username, $fullname){
+		$stmt = $this->db->query('UPDATE users SET fullname = :fullname WHERE username = :username', [
+			':username' => $username,
+			':fullname' => $fullname
+		]);
+
+		return $stmt->rowCount() > 0;
+	}
+
+	public function update_pasword($username, $new_pssw){
+		
+		$hash_password = password_hash($new_pssw, PASSWORD_BCRYPT);
+
+		$stmt = $this->db->query('UPDATE users SET pssw = :pssw WHERE username = :username', [
+			':username' => $username,
+			':pssw' => $hash_password
+		]);
+
+		return $stmt->rowCount() > 0;
+	}
+
 }

@@ -90,11 +90,11 @@ const validateLogin = (input) => {
 		handleInvalid(input.password);
 		return setError(message);
 	} else if (!RegExp.username.test(input.username.value)) {
-		message = "Username is incorrect format";
+		message = "The username is incorrect format";
 		handleInvalid(input.username);
 		return setError(message);
 	} else if (!RegExp.password.test(input.password.value)) {
-		message = "Password is incorrect format";
+		message = "The password is incorrect format";
 		handleInvalid(input.password);
 		return setError(message);
 	}

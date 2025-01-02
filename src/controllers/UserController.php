@@ -57,7 +57,7 @@ class UserController
 
 			$_SESSION['username'] = $user['username'];
 			$_SESSION['fullname'] = $user['fullname'];
-
+			$_SESSION['pssw'] = $user['pssw'];
 
 			$this->util->sendData(true, 'Login successfully', ['username' => $user['username']] );
 		} else {
@@ -109,7 +109,6 @@ class UserController
 				$partner['number_unread'] = $number_unread;
 
 			}
-
 			$this->util->sendData(true, 'get list successfully', ['list' => $result]);
 		} else {
 			$this->util->sendData(true, 'get list failed');
@@ -145,6 +144,53 @@ class UserController
 
 		$this->util->sendData(true, '', ['username' => $auth->username]);
 
+	}
+
+	public function change_fullname(){
+		$username  = isset($_SESSION['username']) ? $_SESSION['username'] : null;
+		
+		$input = json_decode(file_get_contents('php://input'), true);
+
+		$fullname = $this->validation->clearInput($input['fullname']);
+
+		$this->validation->validateAuthen('fullname', $fullname);
+
+		$result = $this->userModel->update_fullname($username, $fullname);
+		
+		if(!$result) {
+			$this->util->sendData(false, 'Failed to Update your full name');
+
+		}
+		$_SESSION['fullname'] = $fullname;
+
+		$this->util->sendData(true, 'Updated your full name successfully');
+
+
+	}
+
+	public function change_password(){
+
+		$input = json_decode(file_get_contents('php://input'), true);
+
+		$username  = isset($_SESSION['username']) ? $_SESSION['username'] : null;
+
+		$current_pssw = $this->validation->clearInput($input['current_pssw']);
+
+		$new_pssw = $this->validation->clearInput($input['new_pssw']);
+		
+		$this->validation->ValidatePassword('current_password', $current_pssw);
+		$this->validation->ValidatePassword('new_password', $new_pssw);
+
+		$result = $this->userModel->update_pasword($username, $new_pssw);
+
+		if(!$result) {
+			$this->util->sendData(false, 'Failed to Update your password');
+
+		}
+		
+		$_SESSION['pssw'] = $new_pssw;
+
+		$this->util->sendData(true, 'Updated your password successfully');
 	}
 
 

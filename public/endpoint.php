@@ -61,6 +61,11 @@ switch ($router->path) {
 	case 'check-login':
 		$router->user->check_login();
 		break;
+	case 'change-fullname':
+		$router->user->change_fullname();
+		break;
+	case 'change-password':
+		$router->user->change_password();
 	case 'list':
 		$router->user->list();
 		break;

@@ -6,7 +6,7 @@ const pathname = location.pathname.toLowerCase();
 let currentOnline = null;
 let currentRoom = null;
 let partner = {};
-let playSound = false;
+// let playSound = false;
 
 
 //generate socket connection
@@ -86,7 +86,7 @@ const Navigate = async (pathname) => {
 				app.innerHTML = await response.text();
 				listApi();
 				
-				if(!playSound) showConfirmModal();
+				if(!window.localStorage.getItem('playSound')) showConfirmPlaySound();
 
 				if(partner && Object.keys(partner).length > 0){
 					showInboxBox(partner.FullName, partner.isOnline, partner.Username);

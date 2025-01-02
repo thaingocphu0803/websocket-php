@@ -53,9 +53,18 @@
 	outline: unset;
 	background: unset;
 	text-align: center;
-	padding: 10px;
 	font-size: large;
 	font-weight: 800;
+	font-size: 24px;
+	font-family:Georgia, 'Times New Roman', Times, serif;
+}
+
+#fullname_profile{
+	color: rgb(245, 240, 240);
+}
+
+#fullname_profile::placeholder{
+	color: rgb(245, 240, 240);
 }
 
 .flex-bottom{
@@ -66,7 +75,9 @@
 	position: relative;
 }
 
-#update_avt_btn, #update_fullname_btn{
+#update_fullname_btn{
+	background-color: unset;
+	border: unset;
 	cursor: pointer;
 }
 
@@ -90,4 +101,9 @@
 	border-radius: 10px;
 	border: unset;
 	font-size: 16px;
+}
+
+.edit-fullname-btn:hover{
+	background-color: var(--rgb-silver);
+	color: #464447;
 }

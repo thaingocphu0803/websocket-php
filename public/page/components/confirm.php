@@ -6,7 +6,7 @@
 	</button>
 	<span id="confirm_message"></span>
 	<div class="group-btn">
-		<button id="play_sound" class="confirm_btn" onclick="closeConfirm()">Yes</button>
+		<button id="yes" class="confirm_btn" onclick="closeConfirm()">Yes</button>
 		<button class="confirm_btn" onclick="closeConfirm()">No</button>
 	</div>
 </div>

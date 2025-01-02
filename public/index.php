@@ -27,6 +27,8 @@
 	<script src="/js/pageJS/inbox.js" defer></script>
 	<script src="/js/pageJS/login.js" defer></script>
 	<script src="/js/pageJS/register.js" defer></script>
+	<script src="/js/pageJS/profile.js" defer></script>
+
 
 </body>
 

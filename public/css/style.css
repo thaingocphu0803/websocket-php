@@ -66,7 +66,7 @@
 	font-size: 18px;
 	color: var(--rgb-dark-red);
 	font-weight: 800;
-	display: none;
+	/* display: none; */
 }
 
 .next-page{
@@ -241,4 +241,8 @@ a{
 .input-form:hover {
 	outline:var(--solid-2) var(--rgb-blue);
 
+}
+
+.flex-align-center{
+	align-self: center;
 }

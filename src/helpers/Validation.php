@@ -10,11 +10,11 @@ class Validation
 		return $input;
 	}
 
-	public function validateAuthen( $option, $input, $password = null)
+	public function validateAuthen($option, $input, $password = null)
 	{
 		$regUsername = "/^[a-zA-Z0-9._]{6,}$/";
 		$regPassword = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/";
-		$regName = "/^[\p{L}]+$/u";
+		$regName = "/^[\p{L} ]+$/u";
 
 		if ($option === 'firstname' || $option === 'lastname') {
 			$subname = str_replace("n", " n", $option);
@@ -23,10 +23,9 @@ class Validation
 		}
 
 		if (empty($input)) {
-			if(!empty($subname)){
+			if (!empty($subname)) {
 				$this->sendOutputValidate(false, "Please enter your $subname", $option);
-
-			}else{
+			} else {
 				$this->sendOutputValidate(false, "Please enter your $option", $option);
 			}
 		}
@@ -34,47 +33,63 @@ class Validation
 		switch ($option) {
 			case 'username':
 				if (!preg_match($regUsername, $input)) {
-					$this->sendOutputValidate(false, "$option is incorrect format", $option);
+					$this->sendOutputValidate(false, "The $option is incorrect format", $option);
 				}
 				break;
 			case 'password':
 				if (!preg_match($regPassword, $input)) {
-					$this->sendOutputValidate(false, "$option is incorrect format", $option);
+					$this->sendOutputValidate(false, "The $option is incorrect format", $option);
 				}
 				break;
 			case 'firstname':
 			case 'lastname':
+			case 'fullname':
 				if (!preg_match($regName, $input)) {
-					$this->sendOutputValidate(false, "$subname is incorrect format", $option);
+					$this->sendOutputValidate(false, "The $subname is incorrect format", $option);
 				}
 				break;
 			case 'confirm_password':
-				if($input !== $password){
-					$this->sendOutputValidate(false, "$subname is not matched", $option);
+				if ($input !== $password) {
+					$this->sendOutputValidate(false, "The $subname is not matched", $option);
 				}
+				break;
+			default:
+				break;
 		}
 	}
 
-	public function validatePassword($input)
+	public function ValidatePassword($option, $input)
 	{
-		$regExp = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/";
-		if (empty($input)) {
-			$this->sendOutputValidate(false, 'Please enter your password', 'password');
-		} else if (!preg_match($regExp, $input)) {
-			$this->sendOutputValidate(false, 'Password is incorrect format', 'password');
-		}
-	}
 
-	public function validateName($input, $option)
-	{
-		$regExp = "/^[A-Za-z]+$/";
 
-		$subName = str_replace("n", " n", $option);
-		// var_dump(empty($input));
-		if (empty($input)) {
-			$this->sendOutputValidate(false, "Please enter your $subName", $option);
-		} else if (!preg_match($regExp, $input)) {
-			$this->sendOutputValidate(false, "$subName is incorrect format", $option);
+		$regPassword = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/";
+
+		$pssw  = isset($_SESSION['pssw']) ? $_SESSION['pssw'] : null;
+
+
+		$subname = str_replace("_", " ", $option);
+
+		switch ($option) {
+			case 'current_password':
+				if(empty($input)){
+					$this->sendOutputValidate(false, "Please enter your $subname", $option);
+				}
+				else if (!password_verify($input, $pssw)) {
+					$this->sendOutputValidate(false, "The $subname is incorrect", $option);
+				}
+				break;
+			case 'new_password':
+				if(empty($input)){
+					$this->sendOutputValidate(false, "Please enter your $subname", $option);
+				}
+				else if (!preg_match($regPassword, $input)) {
+					$this->sendOutputValidate(false, "The $subname is incorrect format", $option);
+				} else if (password_verify($input, $pssw)) {
+					$this->sendOutputValidate(false, "The $subname must be diffirent the current password", $option);
+				}
+				break;
+			default:
+				break;
 		}
 	}
 
