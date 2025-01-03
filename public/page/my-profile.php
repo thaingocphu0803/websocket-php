@@ -11,10 +11,10 @@
 	<div id="form_group_profile">
 		<div class="avt-profile">
 			<label for="user_avt" id="update_avt_btn" title="Click to change your avatar">
-				<img id="my_avatar" src="../asset/logo.webp" alt="my avatar">
+				<img id="my_avatar" src="<?= $authInfor->avatar ? base64_decode($authInfor->avatar) :"../../asset/logo.webp" ?>" alt="my avatar">
 			</label>
 
-			<input id="user_avt" name="user_avt" class="input-file" type="file" accept="image/*" onchange="handleUploadImages(event)">
+			<input id="user_avt" name="user_avt" class="input-file" type="file" accept="image/*" onchange="handleUploadAvatar()">
 
 			<div class="edit-fullname-group">
 				<input

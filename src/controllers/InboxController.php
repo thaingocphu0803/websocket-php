@@ -62,21 +62,21 @@ class InboxController
 		]);
 
 
-		if($_SERVER['REQUEST_METHOD'] != 'POST') {
+		if ($_SERVER['REQUEST_METHOD'] != 'POST') {
 			$this->util->sendData(false, 'Incorrect request format');
 		};
 
-		if(!isset($_FILES['images']) || empty($_POST['room'])){
+		if (!isset($_FILES['images']) || empty($_POST['room'])) {
 			$this->util->sendData(false, 'upload images failed');
 		};
 
 		$files = $_FILES['images']["tmp_name"];
-		
+
 		$room = $_POST['room'];
-		
+
 		$listImage = [];
 
-		foreach( $files as $file){
+		foreach ($files as $file) {
 			$result = $cloudinary->uploadApi()->upload($file, [
 				'folder' => $room,
 				'transformation' => [

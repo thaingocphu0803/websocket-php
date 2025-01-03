@@ -51,7 +51,7 @@ $router = Router::getInstance();
 
 //check request URL to call subtable function
 switch ($router->path) {
-		// UserController
+	// UserController
 	case 'login':
 		$router->user->login();
 		break;
@@ -66,6 +66,10 @@ switch ($router->path) {
 		break;
 	case 'change-password':
 		$router->user->change_password();
+		break;
+	case 'change-avatar':
+		$router->user->change_avatar();
+		break;
 	case 'list':
 		$router->user->list();
 		break;
@@ -81,6 +85,7 @@ switch ($router->path) {
 		break;
 	case 'upload-message-images':
 		$router->inbox->upload_message_images();
+		break;
 	default:
 		break;
 }

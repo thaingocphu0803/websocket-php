@@ -12,6 +12,13 @@
 	width: 150px;
 	height: 150px;
 	border-radius: 50%;
+	border: var(--solid-2) var(--rgb-dark-green);
+	outline: var(--solid-2) var(--rgb-dark-green);
+}
+
+#my_avatar:hover{
+	border: var(--solid-2) var(--rgb-light-green);
+	outline: var(--solid-2) var(--rgb-light-green);
 }
 
 #form_group_profile{

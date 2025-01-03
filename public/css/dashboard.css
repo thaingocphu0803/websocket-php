@@ -36,6 +36,10 @@
 	border-radius: 50%;
 }
 
+#avt {
+	border: var(--solid-2) var(--rgb-silver);
+}
+
 .dropdown {
 	position: relative;
 }

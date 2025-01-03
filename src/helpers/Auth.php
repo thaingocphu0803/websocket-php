@@ -23,8 +23,8 @@ class Auth
 
 			$auth = [
 				'fullname' => $_SESSION['fullname'],
-				'username' => $_SESSION['username']
-
+				'username' => $_SESSION['username'],
+				'avatar' => $_SESSION['avatar']
 			];
 			return (object) $auth;
 

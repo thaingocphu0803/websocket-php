@@ -6,7 +6,9 @@ require_once __DIR__ . '/../helpers/Auth.php';
 require_once __DIR__ . '/../models/UserModel.php';
 require_once __DIR__ . '/../models/UserConnectionModel.php';
 require_once __DIR__ . '/../models/MessageModel.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
+use Cloudinary\Cloudinary;
 
 class UserController
 {
@@ -46,20 +48,22 @@ class UserController
 		if ($user) {
 
 			if ($remember === 1) {
-				
-				$payload= [
+
+				$payload = [
 					'fullname' => $user['fullname'],
-					'username' => $user['username']
-				]; 
+					'username' => $user['username'],
+					'avatar' => $user['avatar']
+				];
 
 				$this->auth->generate_JWT($payload);
 			}
 
 			$_SESSION['username'] = $user['username'];
 			$_SESSION['fullname'] = $user['fullname'];
+			$_SESSION['avatar'] = $user['avatar'];
 			$_SESSION['pssw'] = $user['pssw'];
 
-			$this->util->sendData(true, 'Login successfully', ['username' => $user['username']] );
+			$this->util->sendData(true, 'Login successfully', ['username' => $user['username']]);
 		} else {
 			$this->util->sendData(false, 'Username or password is invalid');
 		}
@@ -103,11 +107,10 @@ class UserController
 
 		if ($result) {
 
-			foreach ($result as &$partner){
+			foreach ($result as &$partner) {
 				$number_unread = $this->messageModel->get_number_unread($username, $partner['partner_username']);
 
 				$partner['number_unread'] = $number_unread;
-
 			}
 			$this->util->sendData(true, 'get list successfully', ['list' => $result]);
 		} else {
@@ -118,14 +121,14 @@ class UserController
 	public function check_login()
 	{
 		$auth = $this->auth->checkAuth();
-		
-		if(!$auth){
+
+		if (!$auth) {
 			$this->util->sendData(false);
 		}
 
 		$room = $this->roomModel->check_room_status($auth->username);
 
-		if(!empty($room)){
+		if (!empty($room)) {
 			$partner  = $this->roomModel->get_status_partner($room['chat_with']);
 
 			$data = [
@@ -138,17 +141,16 @@ class UserController
 			];
 
 			$this->util->sendData(true, '', $data);
-
 		}
 
 
 		$this->util->sendData(true, '', ['username' => $auth->username]);
-
 	}
 
-	public function change_fullname(){
+	public function change_fullname()
+	{
 		$username  = isset($_SESSION['username']) ? $_SESSION['username'] : null;
-		
+
 		$input = json_decode(file_get_contents('php://input'), true);
 
 		$fullname = $this->validation->clearInput($input['fullname']);
@@ -156,19 +158,17 @@ class UserController
 		$this->validation->validateAuthen('fullname', $fullname);
 
 		$result = $this->userModel->update_fullname($username, $fullname);
-		
-		if(!$result) {
-			$this->util->sendData(false, 'Failed to Update your full name');
 
+		if (!$result) {
+			$this->util->sendData(false, 'Failed to Update your full name');
 		}
 		$_SESSION['fullname'] = $fullname;
 
 		$this->util->sendData(true, 'Updated your full name successfully');
-
-
 	}
 
-	public function change_password(){
+	public function change_password()
+	{
 
 		$input = json_decode(file_get_contents('php://input'), true);
 
@@ -177,20 +177,68 @@ class UserController
 		$current_pssw = $this->validation->clearInput($input['current_pssw']);
 
 		$new_pssw = $this->validation->clearInput($input['new_pssw']);
-		
+
+		$hash_password = password_hash($new_pssw, PASSWORD_BCRYPT);
+
+
 		$this->validation->ValidatePassword('current_password', $current_pssw);
 		$this->validation->ValidatePassword('new_password', $new_pssw);
 
-		$result = $this->userModel->update_pasword($username, $new_pssw);
+		$result = $this->userModel->update_pasword($username, $hash_password);
 
-		if(!$result) {
+		if (!$result) {
 			$this->util->sendData(false, 'Failed to Update your password');
-
 		}
-		
-		$_SESSION['pssw'] = $new_pssw;
+
+		$_SESSION['pssw'] = $hash_password;
 
 		$this->util->sendData(true, 'Updated your password successfully');
+	}
+
+	public function change_avatar()
+	{
+		$cloudinary = new Cloudinary([
+			'cloud' => [
+				'cloud_name' => CLOUD_NAME,
+				'api_key'    => CLOUD_API_KEY,
+				'api_secret' => CLOUD_API_SECRET,
+			],
+		]);
+
+
+		if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+			$this->util->sendData(false, 'Incorrect request format');
+		};
+
+		if (!isset($_FILES['avatar']) || !isset($_SESSION['username'])) {
+			$this->util->sendData(false, 'failed to update your avatar');
+		};
+
+		$avatar = $_FILES['avatar']["tmp_name"];
+
+		$username = $_SESSION['username'];
+
+
+		$result = $cloudinary->uploadApi()->upload($avatar, [
+			'folder' => "avatar/$username",
+			'transformation' => [
+				'width' => 500,
+				'height' => 500,
+				'crop' => 'auto',
+				'gravity' => 'faces'
+			]
+		]);
+
+		$avatarUrl = base64_encode($result['secure_url']);
+
+		$result = $this->userModel->update_avatar($username, $avatarUrl);
+
+		if (!$result)  $this->util->sendData(false, 'failed to update your avatar');
+
+		$_SESSION['avatar'] = $avatarUrl;
+
+
+		$this->util->sendData(true, 'updated avatar successfully', ['avatarUrl' => $avatarUrl]);
 	}
 
 
@@ -201,6 +249,5 @@ class UserController
 		$this->util->clearCookie('auth');
 
 		$this->util->sendData(true, 'Logout successfully');
-
 	}
 }
