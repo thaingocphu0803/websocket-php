@@ -1,0 +1,130 @@
+#fiend_container {
+	background-image: url(../asset/background.webp);
+	background-size: cover;
+	width: 100%;
+	height: 100vh;
+	position: relative;
+	display: grid;
+}
+
+#list_request {
+	width: 100%;
+	height: 80vh;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
+}
+
+.list_fiend {
+	width: 100%;
+	display: grid;
+	justify-self: center;
+	grid-template-columns: 20% 80%;
+	grid-template-rows: repeat(2, 1fr);
+	border-radius: 10px;
+	padding: 5px 10px;
+	background-color: var(--rgb-silver);
+	cursor: pointer;
+}
+
+.active{
+	background-color: var(--rgb-dark-violet) !important;
+	color: var( --rgb-silver);
+}
+
+.tabBtn{
+	border: unset;
+	outline: unset;
+	padding: 10px;
+	background-color: var(--rgb-grey-violet);
+	font-size: 16px;
+	font-weight: 500;
+	width: 100%;
+
+}
+
+.tabcontent{
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+	padding: 2em;
+}
+
+.tabBtn:hover {
+	color: var( --rgb-silver);
+	background-color: var(--rgb-thindark-violet);
+}
+.request-btn-group{
+	background-color: var(--rgb-grey-violet);
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	border-radius: 20px;
+}
+
+.boder-radius-left{
+	border-radius: 20px 0 0 20px;
+}
+
+.boder-radius-right{
+	border-radius: 0 20px 20px 0;
+}
+
+
+#find_people {
+	width: 100%;
+	height: 3vh;
+	border-radius: 20px;
+	padding: 20px;
+	font-size: 16px;
+}
+
+#find_people:focus,
+#find_people:hover {
+	outline: var(--solid-2) var(--rgb-blue);
+	border: var(--solid-1) var(--rgb-blue);
+}
+.request-card {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	gap: 10px;
+	align-items: center;
+}
+.non-visible{
+	visibility: hidden;
+}
+
+.request-btn{
+	padding: 5px 10px;
+	border-radius: 10px;
+	border: var(--solid-1) black;
+	font-size: 16px;
+	font-weight: 500;
+	background-color: aliceblue;
+	cursor: pointer;
+}
+
+.request-btn:hover{
+	background-color: var(--rgb-dark-violet);
+	fill: var(--rgb-blue);
+}
+
+.user-request-card {
+	width: 100%;
+	display: grid;
+	justify-self: center;
+	grid-template-columns: 20% 80%;
+	grid-template-rows: repeat(2, 1fr);
+	border-radius: 10px;
+	padding: 5px 10px;
+	background-color: var(--rgb-silver);
+}
+
+#cancel_message, #request_message {
+	font-size: 16px;
+	font-weight: 500;
+	font-style: italic;
+}

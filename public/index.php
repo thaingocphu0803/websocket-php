@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="./css/form.css">
 	<link rel="stylesheet" href="./css/dashboard.css">
 	<link rel="stylesheet" href="./css/profile.css">
+	<link rel="stylesheet" href="./css/friend.css">
 	<title>Chat App</title>
 </head>
 
@@ -28,7 +29,7 @@
 	<script src="/js/pageJS/login.js" defer></script>
 	<script src="/js/pageJS/register.js" defer></script>
 	<script src="/js/pageJS/profile.js" defer></script>
-
+	<script src="/js/pageJS/friend.js" defer></script>
 
 </body>
 

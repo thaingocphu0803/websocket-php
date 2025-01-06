@@ -95,6 +95,8 @@ const Navigate = async (pathname) => {
 			case "my-profile":
 				app.innerHTML = await response.text();
 				break;
+			case "my-friend":
+				app.innerHTML = await response.text();
 			default:
 				break;
 		}

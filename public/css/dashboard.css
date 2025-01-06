@@ -42,6 +42,10 @@
 
 .dropdown {
 	position: relative;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 1em;
 }
 
 #dropdown_btn {
@@ -90,6 +94,22 @@
 .dropdown-item:hover {
 	padding-bottom: 5px;
 	border-bottom: var(--solid-1) var(--rgb-dark-grey);
+}
+
+#friend_btn:hover path{
+ fill: black;
+}
+
+#friend_btn{
+	position: relative;
+}
+
+#number_invite{
+	border-radius: 50px;
+	background-color: #E64040;
+	top: 0;
+	right: 0;
+	position: absolute;
 }
 
 #search {
