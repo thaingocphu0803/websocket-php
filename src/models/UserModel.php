@@ -57,7 +57,8 @@ class UserModel
 								FROM users u
 								LEFT JOIN user_avatar a ON u.username = a.username
 								JOIN user_connection c ON u.username = c.username
-								WHERE u.username != :username", [
+								JOIN friends f ON (f.user1 = u.username OR f.user2 = u.username)
+								WHERE u.username != :username AND f.stt = 'A' ", [
 			':username' => $username
 		]);
 

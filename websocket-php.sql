@@ -11,11 +11,56 @@
  Target Server Version : 100432 (10.4.32-MariaDB)
  File Encoding         : 65001
 
- Date: 06/01/2025 09:19:19
+ Date: 07/01/2025 16:29:05
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for friend_request
+-- ----------------------------
+DROP TABLE IF EXISTS `friend_request`;
+CREATE TABLE `friend_request`  (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `sender` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `receiver` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `stt` enum('pending','accepted','rejected') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'pending',
+  `created_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_friend_sender`(`sender` ASC) USING BTREE,
+  INDEX `fk_friend_receiver`(`receiver` ASC) USING BTREE,
+  CONSTRAINT `fk_friend_receiver` FOREIGN KEY (`receiver`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_friend_sender` FOREIGN KEY (`sender`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of friend_request
+-- ----------------------------
+INSERT INTO `friend_request` VALUES (1, 'phu111', 'phu222', 'rejected', '2025-01-07 16:23:15');
+INSERT INTO `friend_request` VALUES (2, 'phu111', 'phu333', 'pending', '2025-01-07 16:25:09');
+INSERT INTO `friend_request` VALUES (3, 'phu111', 'phu444', 'rejected', '2025-01-07 16:25:10');
+
+-- ----------------------------
+-- Table structure for friends
+-- ----------------------------
+DROP TABLE IF EXISTS `friends`;
+CREATE TABLE `friends`  (
+  `int` int NOT NULL AUTO_INCREMENT,
+  `user1` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `user2` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `stt` enum('A','X') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'A',
+  PRIMARY KEY (`int`) USING BTREE,
+  INDEX `fk_friend_user2`(`user2` ASC) USING BTREE,
+  UNIQUE INDEX `unique_relationship`(`user1` ASC, `user2` ASC) USING BTREE,
+  CONSTRAINT `fk_friend_user1` FOREIGN KEY (`user1`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_friend_user2` FOREIGN KEY (`user2`) REFERENCES `users` (`username`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of friends
+-- ----------------------------
+INSERT INTO `friends` VALUES (3, 'phu222', 'phu111', 'A');
 
 -- ----------------------------
 -- Table structure for images_message
@@ -212,7 +257,7 @@ CREATE TABLE `rooms`  (
 -- ----------------------------
 INSERT INTO `rooms` VALUES (24, 'phu333', 'phu222_phu333', 'A', 'phu222', '2025-01-03 11:27:23');
 INSERT INTO `rooms` VALUES (25, 'phu222', 'phu111_phu222', 'X', 'phu111', '2025-01-03 11:25:54');
-INSERT INTO `rooms` VALUES (26, 'phu111', 'phu111_phu333', 'X', 'phu333', '2025-01-03 11:52:31');
+INSERT INTO `rooms` VALUES (26, 'phu111', 'phu111_phu222', 'X', 'phu222', '2025-01-07 11:02:47');
 INSERT INTO `rooms` VALUES (27, 'phu444', 'phu111_phu444', 'X', 'phu111', '2024-12-24 14:53:01');
 INSERT INTO `rooms` VALUES (28, 'phu555', 'phu111_phu555', 'A', 'phu111', '2024-12-25 08:18:46');
 
@@ -232,7 +277,7 @@ CREATE TABLE `user_avatar`  (
 -- ----------------------------
 INSERT INTO `user_avatar` VALUES (1, 'phu222', 'aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vY29ybi1jaGF0L2ltYWdlL3VwbG9hZC92MTczNTg3NzY2OS9hdmF0YXIvcGh1MjIyL2MyaGN6bm9tdmY1bXhrc2lscmtqLmpwZw==');
 INSERT INTO `user_avatar` VALUES (2, 'phu333', 'aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vY29ybi1jaGF0L2ltYWdlL3VwbG9hZC92MTczNTg3ODQzNy9hdmF0YXIvcGh1MzMzL2RxaXhhYmd3OWtvZjdhbHV4dmRkLndlYnA=');
-INSERT INTO `user_avatar` VALUES (3, 'phu111', 'aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vY29ybi1jaGF0L2ltYWdlL3VwbG9hZC92MTczNTg3ODQ2My9hdmF0YXIvcGh1MTExL2loeGkxZmZ0Z3B4YnA1d3d4ZmxoLmpwZw==');
+INSERT INTO `user_avatar` VALUES (3, 'phu111', 'aHR0cHM6Ly9yZXMuY2xvdWRpbmFyeS5jb20vY29ybi1jaGF0L2ltYWdlL3VwbG9hZC92MTczNjEzMzM1Ny9hdmF0YXIvcGh1MTExL2FtZHJlMnd6aHhxc2J6dW9ndGNnLmpwZw==');
 
 -- ----------------------------
 -- Table structure for user_connection

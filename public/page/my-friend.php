@@ -9,7 +9,7 @@
 			<div class="request-btn-group">
 				<button class="tabBtn active boder-radius-left" onclick="openTabContent(event, `friend_request`)">Friend Request</button>
 				<button class="tabBtn" onclick="openTabContent(event, `friend_request_sent`)">Friend Request Send</button>
-				<button class="tabBtn boder-radius-right" onclick="openTabContent(event, `search_people`)">Search For People</button>
+				<button class="tabBtn boder-radius-right" onclick="openTabContent(event, `search_people`)">Adding friend</button>
 			</div>
 
 			<div id="friend_request" class="tabcontent">
@@ -17,9 +17,6 @@
 					<img id="avt" src=" ../asset/logo.webp" alt="user's avatar" width="50px" height="50px">
 					<div id="title">
 						<span id="fullname_l">Phu</span>
-					</div>
-					<div class="request-card">
-						<span id="request_message"></span>
 						<div class="group-request-btn">
 							<button class="request-btn" title="Click to accept friend request" onclick="handleFriendRequest()">
 								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16px" height="16px">
@@ -33,54 +30,33 @@
 							</button>
 						</div>
 					</div>
+
+					<span id="request_message"></span>
 				</div>
 			</div>
 
-			<div id="friend_request_sent" class="tabcontent hidden">
-				<div id="" class="user-request-card">
-					<img id="avt" src=" ../asset/logo.webp" alt="user's avatar" width="50px" height="50px">
-					<div id="title">
-						<span id="fullname_l">Phu</span>
-					</div>
-					<div class="request-card">
-						<span id="cancel_message">ssss</span>
-						<button class="request-btn" title="Click to cancel friend request" onclick="CancelFriendRequest(this)">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="16px" height="16px">
-								<path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM472 200l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" />
-							</svg>
-						</button>
-					</div>
-				</div>
-			</div>
+			<div id="friend_request_sent" class="tabcontent hidden"></div>
 
 			<div id="search_people" class="tabcontent hidden">
-				<input id="find_people" type="text" placeholder="Search for people....">
+				<input id="find_people" type="text" placeholder="Searching by user's name..." oninput="handleSearchPeople(event)">
 
-				<div id="" class="user-request-card">
-					<img id="avt" src=" ../asset/logo.webp" alt="user's avatar" width="50px" height="50px">
-					<div id="title">
-						<span id="fullname_l">Phu</span>
-					</div>
-					<div class="request-card">
-						<span></span>
-						<button class="request-btn" title="Click to send friend request" id="click_send_btn" onclick="handleSendFriendRequest(this)">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="16px" height="16px">
-								<path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM504 312l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
-							</svg>
-						</button>
-						<button class="request-btn hidden" id="cancel_send_btn" title="Click to cancel friend request" onclick="handleCancelFriendRequest(this)">
-							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="16px" height="16px">
-								<path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM472 200l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" />
-							</svg>
-						</button>
-					</div>
-				</div>
+				<div id="people_card"></div>
 			</div>
 		</div>
 		<!-- end list inivte -->
 
 		<!-- start list friend -->
-		<div id="list_friend">list friend</div>
+		<div class="list_friend">
+			<h2 id="title_list_friend">List Friend</h2>
+			<div id="list_content">
+				<div id="friend_card">
+					<img id="friend_avt" src="../asset/logo.webp" alt="friend avatar" width="180px" height="180px">
+					<p id="friend_name">Thai Phu</p>
+					<button id="delete_friend" onclick="handleSendFriendRequest(this, `add_friend`)" class="request-btn">Delete Friend</button>
+					<button id="add_friend" onclick="handleSendFriendRequest(this, `delete_friend`)" class="request-btn hidden">Add Friend</button>
+				</div>
+			</div>
+		</div>
 		<!-- start list friend -->
 	</div>
 </div>

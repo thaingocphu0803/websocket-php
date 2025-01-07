@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../src/controllers/UserController.php';
 require_once __DIR__ . '/../src/controllers/InboxController.php';
+require_once __DIR__ . '/../src/controllers/FriendController.php';
 require_once __DIR__ . '/../config.php';
 
 
@@ -12,6 +13,7 @@ class Router
 {
 	public $user;
 	public $inbox;
+	public $friend;
 	public $path;
 	public $param;
 	private static $instance = null;
@@ -20,6 +22,7 @@ class Router
 	{
 		$this->user = new UserController();
 		$this->inbox = new InboxController();
+		$this->friend = new FriendController();
 		$this->setURL();
 	}
 
@@ -86,6 +89,15 @@ switch ($router->path) {
 	case 'upload-message-images':
 		$router->inbox->upload_message_images();
 		break;
+	//  FriendController
+	case 'search-people':
+		$router->friend->search_people();
+		break;
+	case 'handle-friend-request':
+		$router->friend->handle_friend_request();
+		break;
+	case 'list-send-add':
+		$router->friend->get_list_send_add();
 	default:
 		break;
 }

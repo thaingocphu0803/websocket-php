@@ -97,6 +97,7 @@ const Navigate = async (pathname) => {
 				break;
 			case "my-friend":
 				app.innerHTML = await response.text();
+				listSendAdd();
 			default:
 				break;
 		}

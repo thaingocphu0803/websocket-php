@@ -1,27 +1,32 @@
 
 
 const listApi= async()=>{	
-	const response  = await fetch (`/${endpoint}/list`, {
-		method:'post'
-	})
-
-	const data = await response.json();
-
-
-	renderList (data.data.list);
-
-
-	const search = document.getElementById('search');
-	
-	search.addEventListener('input', ()=>{
-		const query = search.value.toLowerCase();
-
-		const filterData =  data.data.list.filter((item)=>{
-			return item.partner_fullname.toLowerCase().includes(query);
+	try{
+		const response  = await fetch (`/${endpoint}/list`, {
+			method:'post'
 		})
-
-		renderList (filterData);
-	})
+	
+		const data = await response.json();
+	
+	
+		renderList (data.data.list);
+	
+	
+		const search = document.getElementById('search');
+		
+		search.addEventListener('input', ()=>{
+			const query = search.value.toLowerCase();
+	
+			const filterData =  data.data.list.filter((item)=>{
+				return item.partner_fullname.toLowerCase().includes(query);
+			})
+	
+			renderList (filterData);
+		})
+		
+	}catch(err){
+		console.log(err);
+	}
 };
 
 const renderList = (data) =>{

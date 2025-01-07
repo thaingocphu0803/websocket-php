@@ -1,3 +1,5 @@
+let debounceTime = null;
+
 const openTabContent = (event, tab) => {
 	const tabContent = document.getElementsByClassName('tabcontent');
 	const tabButton = document.getElementsByClassName('tabBtn');
@@ -42,28 +44,184 @@ const handleFriendRequest = (reject = false) => {
 	
 }
 
-const CancelFriendRequest = (cancelBtn) => {
+const CancelFriendRequest = async(cancelBtn , id, receiverUsername) => {
+
+	const cancelBtnRequest = document.getElementById(`cancel_btn_${receiverUsername}`)
+	const SentBtnRequest = document.getElementById(`send_btn_${receiverUsername}`)
+
+
+	const formData = {
+		receiver: receiverUsername,
+		stt: 'rejected'
+	}
+
+	const data = await fetchFriendRequest(formData);
+
+	if(!data) return
 
 	if(!cancelBtn.classList.contains('hidden')){
 		cancelBtn.classList.add('hidden');
 	}
 
-	document.getElementById('cancel_message').textContent = "Your friend request has been canceled";
+	document.getElementById(id).textContent = "Your friend request has been canceled";
+
+	if(SentBtnRequest.classList.contains('hidden')){
+		SentBtnRequest.classList.remove('hidden');
+		cancelBtnRequest.classList.add('hidden');
+	}
+
 
 }
 
-const handleSendFriendRequest = (sendFriendRequestBtn) => {
+const handleSendFriendRequest = async (sendFriendRequestBtn, id, peopleUsername) => {
+
+	const formData = {
+		receiver: peopleUsername,
+		stt: 'pending'
+	}
+
+	const data = await fetchFriendRequest(formData);
+
+	if(!data) return
+	
 	if(!sendFriendRequestBtn.classList.contains('hidden')){
 		sendFriendRequestBtn.classList.add('hidden')
 	}
 
-	document.getElementById('cancel_send_btn').classList.remove('hidden');
+	document.getElementById(id).classList.remove('hidden');
+	listSendAdd();
 }
 
-const handleCancelFriendRequest = (sendFriendRequestBtn) => {
+const handleCancelFriendRequest = async(sendFriendRequestBtn, id, peopleUsername) => {
+	const formData = {
+		receiver: peopleUsername,
+		stt: 'rejected'
+	}
+
+	const data = await fetchFriendRequest(formData);
+
+	if(!data) return
+
 	if(!sendFriendRequestBtn.classList.contains('hidden')){
 		sendFriendRequestBtn.classList.add('hidden')
 	}
 
-	document.getElementById('click_send_btn').classList.remove('hidden');
+	document.getElementById(id).classList.remove('hidden');
+}
+
+const handleSearchPeople = async(event) =>{
+	let inputSearch = event.target.value;
+
+	clearTimeout(debounceTime);
+
+	debounceTime = setTimeout(async()=> {
+		const listPeople = await fetchSearchAPI(inputSearch);
+
+		if(!listPeople) return;
+
+		renderPeopleCard(listPeople);
+
+	},500)
+
+	
+
+}
+
+const fetchSearchAPI = async(formData) => {
+		try{
+			const response = await fetch(`/${endpoint}/search-people`,{
+				method: 'post',
+				body: JSON.stringify({key: formData})
+			});
+			const data = await response.json();
+			
+			if(!data.status) return false;
+
+			return data.data.listPeople
+		}catch(err){
+			console.log(err);
+		}
+}
+
+const fetchFriendRequest = async(formData) => {
+	const response = await fetch(`/${endpoint}/handle-friend-request`,{
+		method: 'post',
+		body: JSON.stringify(formData)
+	});
+
+	const data = await response.json();
+
+	if(!data.status) return false;
+
+	return data;
+
+}
+
+const renderPeopleCard = (listPeople) => {
+	const listContent = document.getElementById('people_card');
+
+	listContent.innerHTML = "";
+
+	listPeople.forEach( (people) => {
+		listContent.innerHTML += `
+			<div id="${people.username}" class="user-request-card">
+				<img id="avt" src=" ${people.avatar ? atob(people.avatar) : '../asset/logo.webp'}" alt="user's avatar" width="50px" height="50px">
+				<div id="title">
+					<span id="fullname_l">${people.fullname}</span>
+
+					<button class="request-btn ${people.stt === 'pending' ? 'hidden' : ''}" title="Click to add friend" id="send_btn_${people.username}" onclick="handleSendFriendRequest(this,  'cancel_btn_${people.username}', '${people.username}')">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="16px" height="16px">
+							<path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM504 312l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
+						</svg>
+					</button>
+						
+					<button class="request-btn ${people.stt === 'pending' ? '' : 'hidden'}" id="cancel_btn_${people.username}" title="Click to cancel friend request" onclick="handleCancelFriendRequest(this, 'send_btn_${people.username}', '${people.username}')">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="16px" height="16px">
+							<path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM472 200l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" />
+						</svg>
+					</button>
+				</div>
+			</div>
+	`
+	});
+
+}
+
+const listSendAdd = async() => {
+	try{
+		const response = await fetch(`/${endpoint}/list-send-add`);
+
+		const data = await response.json();
+
+		if(!data.status) return
+
+		renderReceiverRequest(data.data.listReceiverRequest)
+	}catch(err){
+		console.log(err);
+	}
+}
+
+const renderReceiverRequest = (listReceiver) => {
+	const listContent = document.getElementById('friend_request_sent');
+
+	listContent.innerHTML = "";
+
+	listReceiver.forEach( (receiver, index) => {
+		listContent.innerHTML += `
+			<div id="" class="user-request-card">
+				<img id="avt" src=" ${receiver.avatar ? atob(receiver.avatar) : '../asset/logo.webp'}" alt="user's avatar" width="50px" height="50px">
+				<div id="title">
+					<span id="fullname_l">${receiver.fullname}</span>
+					<button class="request-btn" title="Click to cancel friend request" onclick="CancelFriendRequest(this, 'cancel_message_${index}', '${receiver.username}')">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="16px" height="16px">
+							<path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM472 200l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" />
+						</svg>
+					</button>
+				</div>
+
+				<span id="cancel_message_${index}"></span>
+			</div>
+	`
+	});
+
 }
