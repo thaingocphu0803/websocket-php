@@ -24,7 +24,7 @@
 		<div id="inbox_img"></div>
 		<div id="inbox" class="hidden">
 			<div class="inbox-header">
-				<img id="avt" src="../asset/logo.webp" alt="user's avatar" width="50px" height="50px">
+				<img class="avt" src="../asset/logo.webp" alt="user's avatar" width="50px" height="50px">
 				<span id="fullname_b"></span>
 				<span id="partner_username" class="hidden"></span>
 				<span id="status_b"></span>

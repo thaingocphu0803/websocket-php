@@ -2,6 +2,8 @@
 require_once __DIR__ . '/../src/controllers/UserController.php';
 require_once __DIR__ . '/../src/controllers/InboxController.php';
 require_once __DIR__ . '/../src/controllers/FriendController.php';
+require_once __DIR__ . '/../src/controllers/TemplateController.php';
+
 require_once __DIR__ . '/../config.php';
 
 
@@ -16,6 +18,7 @@ class Router
 	public $friend;
 	public $path;
 	public $param;
+	public $template;
 	private static $instance = null;
 
 	public function __construct()
@@ -23,6 +26,7 @@ class Router
 		$this->user = new UserController();
 		$this->inbox = new InboxController();
 		$this->friend = new FriendController();
+		$this->template = new TemplateController();
 		$this->setURL();
 	}
 
@@ -54,7 +58,7 @@ $router = Router::getInstance();
 
 //check request URL to call subtable function
 switch ($router->path) {
-	// UserController
+		// UserController
 	case 'login':
 		$router->user->login();
 		break;
@@ -79,7 +83,7 @@ switch ($router->path) {
 	case 'logout':
 		$router->user->logout();
 		break;
-	// InboxController
+		// InboxController
 	case 'get-message':
 		$router->inbox->get_message();
 		break;
@@ -89,7 +93,7 @@ switch ($router->path) {
 	case 'upload-message-images':
 		$router->inbox->upload_message_images();
 		break;
-	//  FriendController
+		//  FriendController
 	case 'search-people':
 		$router->friend->search_people();
 		break;
@@ -98,6 +102,17 @@ switch ($router->path) {
 		break;
 	case 'list-send-add':
 		$router->friend->get_list_send_add();
+		break;
+	case 'list-add-request':
+		$router->friend->get_list_add_request();
+		break;
+	case 'get-count-friend-request':
+		$router->friend->get_count_friend_request();
+		break;
+		//TemplateController
+	case 'handle-template':
+		$router->template->handle_template();
+		break;
 	default:
 		break;
 }

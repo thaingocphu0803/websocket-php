@@ -50,4 +50,26 @@ class FriendController {
 		$this->util->sendData(true,'geting list send friend request successfully', ['listReceiverRequest' => $result]);
 
 	}
+
+	public function get_list_add_request(){
+		$username =  $_SESSION['username'] ?? null;
+
+		$result =  $this->friendModel->get_list_add_request($username);
+
+		if(!$result) $this->util->sendData(false, 'Failed to get list add request');
+
+		$this->util->sendData(true,'geting list add request successfully', ['listAddRequest' => $result]);
+
+	}
+
+	public function get_count_friend_request(){
+		$username =  $_SESSION['username'] ?? null;
+
+		$result =  $this->friendModel->get_count_friend_request($username);
+
+		if(!$result) $this->util->sendData(false, 'Failed to get number friend request');
+
+		$this->util->sendData(true,'geting number friend request successfully', ['count' => $result['number_request']]);
+
+	}
 }

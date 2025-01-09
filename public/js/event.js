@@ -127,7 +127,7 @@ const deleteUploadImage = (id) => {
 
 	const inputFiles = document.getElementById('inbox_image');
 	const images = Array.from(inputFiles.files);
-	const updatedImages = images.filter(image => image.lastModified !== parseInt(id));
+	const updatedImages = images.filter(image => image.lastModified !== parseInt(id || 0));
 	const dataTransfer = new DataTransfer();
 
 	updatedImages.forEach(updatedImage => dataTransfer.items.add(updatedImage));
@@ -172,3 +172,4 @@ const showConfirmPlaySound = () => {
 	}, 1000)
 
 }
+

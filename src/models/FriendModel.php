@@ -74,5 +74,34 @@ class FriendModel {
 		return 	$result;
 
 	}
+
+	public function get_list_add_request($username){
+		$stmt = $this->db->query("SELECT u.username as senderId, u.fullname as senderFullname, a.avatar as senderAvt FROM users u
+								LEFT JOIN user_avatar a ON u.username = a.username
+								JOIN friend_request fr ON (fr.sender = u.username AND fr.stt = 'pending')
+								WHERE fr.receiver = :username",[
+			':username' => $username
+		]);
+
+		$result = $this->db->fetch_all($stmt);
+
+		if(!$result) return false;
+
+		return 	$result;
+
+	}
+
+	
+	public function get_count_friend_request($username){
+		$stmt = $this->db->query("SELECT COUNT(stt) as number_request FROM friend_request WHERE receiver = :username AND stt = 'pending' ",[
+			':username' => $username
+		]);
+
+		$result = $this->db->fetch($stmt);
+
+		if(!$result) return false;
+
+		return 	$result;
+	}
 	
 }

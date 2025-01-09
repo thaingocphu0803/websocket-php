@@ -6,8 +6,7 @@ const pathname = location.pathname.toLowerCase();
 let currentOnline = null;
 let currentRoom = null;
 let partner = {};
-// let playSound = false;
-
+let cacheObj = {};
 
 //generate socket connection
 
@@ -35,14 +34,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 				}
 			};
 
-			if(data.data.roomStatus === 'A'){ 
+			if (data.data.roomStatus === "A") {
 				partner.FullName = data.data.partnerFullName;
 				partner.isOnline = data.data.parterIsOnline;
 				partner.Username = data.data.partnerUserName;
 			}
 
-			Navigate(pathname != '/login' ? pathname : '/dashboard');
-
+			Navigate(pathname != "/login" ? pathname : "/dashboard");
 		}
 	} catch (err) {
 		console.log(err);
@@ -61,43 +59,66 @@ const Navigate = async (pathname) => {
 	  param 2: id   
 	*/
 
-	console.log(pathname);
-
 	window.history.pushState({ path: pathname }, "", `${pathname}`);
 
 	const param = pathname.split("/");
 
 	const path = param[1] ? param[1] : "login";
 
+	let template = null;
 
 	try {
-		const response = await fetch(`/page/${path}.php`);
+
+		const response = await fetch(`/${endpoint}/handle-template`, {
+			method: "post",
+			headers: cacheObj[path]
+				? { "If-Modified-Since": cacheObj[path].lastModified }
+				: {},
+			body: JSON.stringify({ template: path }),
+		});
+
+		if (response.status === 304) {
+			template = cacheObj[path].template;
+		} else if (response.ok) {
+			template = await response.text();
+
+			cacheObj[path] = {
+				lastModified: response.headers.get("Last-Modified"),
+				template,
+			};
+		}
 
 		const app = document.getElementById("app");
 
 		switch (path) {
 			case "login":
-				app.innerHTML = await response.text();
+				app.innerHTML = template;
 				break;
 			case "register":
-				app.innerHTML = await response.text();
+				app.innerHTML = template;
 				break;
 			case "dashboard":
-				app.innerHTML = await response.text();
+				app.innerHTML = template;
 				listApi();
-				
-				if(!window.localStorage.getItem('playSound')) showConfirmPlaySound();
 
-				if(partner && Object.keys(partner).length > 0){
-					showInboxBox(partner.FullName, partner.isOnline, partner.Username);
+				if (!window.localStorage.getItem("playSound"))
+					showConfirmPlaySound();
+
+				if (partner && Object.keys(partner).length > 0) {
+					showInboxBox(
+						partner.FullName,
+						partner.isOnline,
+						partner.Username
+					);
 				}
 				break;
 			case "my-profile":
-				app.innerHTML = await response.text();
+				app.innerHTML = template;
 				break;
 			case "my-friend":
-				app.innerHTML = await response.text();
+				app.innerHTML = template;
 				listSendAdd();
+				listAddRequest();
 			default:
 				break;
 		}

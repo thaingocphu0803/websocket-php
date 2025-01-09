@@ -7,12 +7,14 @@ use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use RoomModel;
 use UserConnectionModel;
+use UserModel;
 use Validation;
 
 require_once __DIR__ . '/../models/UserConnectionModel.php';
 require_once __DIR__ . '/../models/MessageModel.php';
 require_once __DIR__ . '/../helpers/Validation.php';
 require_once __DIR__ . '/../models/RoomModel.php';
+require_once __DIR__ . '/../models/UserModel.php';
 
 class Chat implements MessageComponentInterface
 {
@@ -21,6 +23,7 @@ class Chat implements MessageComponentInterface
 	protected $messageModel;
 	protected $validation;
 	protected $roomModel;
+	protected $userModel;
 
 	public function __construct()
 	{
@@ -29,6 +32,7 @@ class Chat implements MessageComponentInterface
 		$this->messageModel =  new MessageModel();
 		$this->validation = new Validation();
 		$this->roomModel = new RoomModel();
+		$this->userModel = new UserModel();
 	}
 
 	public function onOpen(ConnectionInterface $conn)
@@ -43,6 +47,8 @@ class Chat implements MessageComponentInterface
 	{
 		$ojbMessage = json_decode($msg, true);
 		$connection_id = $from->resourceId;
+
+		echo $ojbMessage['type'];
 
 		if ($ojbMessage["type"] == 'userConnect') {
 			$userConnect = $ojbMessage["userConnect"] ?? null;
@@ -131,6 +137,31 @@ class Chat implements MessageComponentInterface
 					$client->send(json_encode($sendMessage));
 				}
 			}
+		}else if($ojbMessage["type"] == "sendFriendRequest"){
+				$receiverId = $ojbMessage["to"];
+				$senderId = $ojbMessage["from"];
+
+				$sender = $this->userModel->check_authen($senderId);
+				$receiver = $this->userConnectionModel->get_user_connection($receiverId);
+
+
+				if(!$receiver || !$sender) die();
+
+				foreach ($this->clients as $client) {
+					if ($client->resourceId === $receiver['connection_id']) {
+	
+						$sendMessage = [
+							'type' => $ojbMessage["type"],
+							'senderId' => $senderId,
+							'senderAvt' => $sender['avatar'],
+							'senderFullname' => $sender['fullname']
+						];
+	
+						$client->send(json_encode($sendMessage));
+					}
+				}
+
+
 		}
 	}
 
