@@ -144,6 +144,8 @@ class Chat implements MessageComponentInterface
 				$sender = $this->userModel->check_authen($senderId);
 				$receiver = $this->userConnectionModel->get_user_connection($receiverId);
 
+				var_dump($receiver);
+
 
 				if(!$receiver || !$sender) die();
 
@@ -156,12 +158,27 @@ class Chat implements MessageComponentInterface
 							'senderAvt' => $sender['avatar'],
 							'senderFullname' => $sender['fullname']
 						];
+						$client->send(json_encode($sendMessage));
+					}
+				}
+		}else if($ojbMessage["type"] == "cancelFriendRequest"){
+			$receiverId = $ojbMessage["to"];
+			$receiver = $this->userConnectionModel->get_user_connection($receiverId);
+
+
+				if(!$receiver) die();
+
+				foreach ($this->clients as $client) {
+					if ($client->resourceId === $receiver['connection_id']) {
+	
+						$sendMessage = [
+							'type' => $ojbMessage["type"],
+							'senderId' => $ojbMessage['from']
+						];
 	
 						$client->send(json_encode($sendMessage));
 					}
 				}
-
-
 		}
 	}
 

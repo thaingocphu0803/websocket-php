@@ -100,7 +100,7 @@ const Navigate = async (pathname) => {
 			case "dashboard":
 				app.innerHTML = template;
 				listApi();
-
+				fetchCountRequestAPI();
 				if (!window.localStorage.getItem("playSound"))
 					showConfirmPlaySound();
 
@@ -114,11 +114,13 @@ const Navigate = async (pathname) => {
 				break;
 			case "my-profile":
 				app.innerHTML = template;
+				fetchCountRequestAPI();
 				break;
 			case "my-friend":
 				app.innerHTML = template;
 				listSendAdd();
 				listAddRequest();
+				fetchCountRequestAPI();
 			default:
 				break;
 		}

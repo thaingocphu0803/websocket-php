@@ -8,7 +8,9 @@ const listApi= async()=>{
 	
 		const data = await response.json();
 	
-	
+		
+		if(data.data.length === 0) return;
+
 		renderList (data.data.list);
 	
 	
@@ -33,7 +35,6 @@ const renderList = (data) =>{
 
 	const list = document.getElementById('list_chat');
 	list.innerHTML = "";
-
 	data.forEach(item => {
 		list.innerHTML += `
 			<div id="${item.partner_username}" class="inbox-card" onclick="showInboxBox('${item.partner_fullname}', '${item.isOnline}', '${item.partner_username}'); resetNotification(this)">

@@ -100,6 +100,9 @@ switch ($router->path) {
 	case 'handle-friend-request':
 		$router->friend->handle_friend_request();
 		break;
+	case 'handle-friend-response':
+		$router->friend->handle_friend_response();
+		break;
 	case 'list-send-add':
 		$router->friend->get_list_send_add();
 		break;

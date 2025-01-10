@@ -1,6 +1,6 @@
 let debounceTime = null;
 
-const returnToMyFriend = async() => {
+const fetchCountRequestAPI = async() => {
 	try{
 		const response = await fetch(`/${endpoint}/get-count-friend-request`);
 		const data = await response.json();
@@ -15,7 +15,6 @@ const returnToMyFriend = async() => {
 			numberRequest.classList.add('hidden');
 		}
 
-		Navigate('/my-friend')
 	}catch(err){
 		console.log(err)
 	}
@@ -42,11 +41,28 @@ const openTabContent = (event, tab) => {
 
 }
 
-const handleFriendRequest = (reject = false) => {
+const handleFriendRequest = async(senderUsername, reject = false) => {
 	const groupRequestBtn = document.getElementsByClassName('group-request-btn')[0];
-	const requestMessage = document.getElementById('request_message');
 	const numberRequest = document.getElementById('number_invite');
-	let message = null;
+	const requestCard = document.getElementById(`request_${senderUsername}`)
+	let formData = {}
+
+	if(reject){
+		formData = {
+			sender: senderUsername,
+			stt: 'rejected'
+		}
+	
+	}else{
+		formData = {
+			sender: senderUsername,
+			stt: 'accepted'
+		}
+	}
+
+	const data = await fetchFriendResponse(formData);
+
+	if(!data.status) return;
 
 	numberRequest.textContent = parseInt(numberRequest.textContent || 0) -1;
 
@@ -58,21 +74,18 @@ const handleFriendRequest = (reject = false) => {
 		groupRequestBtn.classList.add('hidden');
 	}
 
-	if(reject){
-		message = "This friend request has been rejected"
-		requestMessage.textContent = message;
-		return
-	}
+	requestCard &&	requestCard.remove();
 
-	message = "This friend request has been accepted"
-	requestMessage.textContent = message;
+
 	
 }
 
 const CancelFriendRequest = async(cancelBtn , id, receiverUsername) => {
 
-	const cancelBtnRequest = document.getElementById(`cancel_btn_${receiverUsername}`)
-	const SentBtnRequest = document.getElementById(`send_btn_${receiverUsername}`)
+	const SentBtnRequest = document.getElementById(`send_btn_${receiverUsername}`) ?? null;
+	const addfriendMessage = document.getElementById(`addfriend_message_${receiverUsername}`) ?? null;
+	const from = document.getElementById("username").textContent;
+
 
 
 	const formData = {
@@ -84,18 +97,26 @@ const CancelFriendRequest = async(cancelBtn , id, receiverUsername) => {
 
 	if(!data) return
 
+	const message = {
+		type: 'cancelFriendRequest',
+		from,
+		to: receiverUsername
+	}
+	socket.send(JSON.stringify(message));
+
 	if(!cancelBtn.classList.contains('hidden')){
 		cancelBtn.classList.add('hidden');
 	}
 
 	document.getElementById(id).textContent = "Your friend request has been canceled";
 
-	if(SentBtnRequest.classList.contains('hidden')){
+	if(SentBtnRequest && SentBtnRequest.classList.contains('hidden')){
 		SentBtnRequest.classList.remove('hidden');
-		cancelBtnRequest.classList.add('hidden');
 	}
 
-
+	if(addfriendMessage){
+		addfriendMessage.textContent = '';
+	}
 }
 
 const handleSendFriendRequest = async (sendFriendRequestBtn, id, peopleUsername) => {
@@ -123,7 +144,7 @@ const handleSendFriendRequest = async (sendFriendRequestBtn, id, peopleUsername)
 		sendFriendRequestBtn.classList.add('hidden')
 	}
 
-	document.getElementById(id).classList.remove('hidden');
+	document.getElementById(id).textContent = "Adding friend request have been sent";
 	listSendAdd();
 }
 
@@ -192,6 +213,20 @@ const fetchFriendRequest = async(formData) => {
 
 }
 
+const fetchFriendResponse = async(formData) => {
+	const response = await fetch(`/${endpoint}/handle-friend-response`,{
+		method: 'post',
+		body: JSON.stringify(formData)
+	});
+
+	const data = await response.json();
+
+	if(!data.status) return false;
+
+	return data;
+
+}
+
 const listSendAdd = async() => {
 	try{
 		const response = await fetch(`/${endpoint}/list-send-add`);
@@ -226,10 +261,12 @@ const listAddRequest = async() => {
 }
 
 socket.onmessage = (event) => {
+	
 	const objMessage = JSON.parse(event.data);
+	const numberRequest = document.getElementById('number_invite');	
+
 
 	if(objMessage.type === "sendFriendRequest"){
-		const numberRequest = document.getElementById('number_invite');	
 		numberRequest.textContent = parseInt(numberRequest.textContent || 0) + 1;
 
 		if(numberRequest.classList.contains('hidden')){
@@ -237,6 +274,14 @@ socket.onmessage = (event) => {
 		}
 	
 		renderRequestCard(objMessage)
+
+	}else if(objMessage.type === "cancelFriendRequest"){
+		const requestCard =  document.getElementById(`request_${objMessage.senderId}`)
+		requestCard && requestCard.remove();
+		numberRequest.textContent = parseInt(numberRequest.textContent || 0) - 1;
+		if(parseInt(numberRequest.textContent) === 0){
+			numberRequest.classList.add('hidden');
+		}
 	}
 }
 
@@ -271,56 +316,54 @@ const renderPeopleCard = (listPeople) => {
 
 	listContent.innerHTML = "";
 
-	listPeople.forEach( (people) => {
-		listContent.innerHTML += `
+	listPeople.forEach( people => {
+		if(people.stt !== 'pending'){
+			listContent.innerHTML += `
 			<div id="${people.username}" class="user-request-card">
 				<img class="avt" src=" ${people.avatar ? atob(people.avatar) : '../asset/logo.webp'}" alt="user's avatar" width="50px" height="50px">
 				<div id="title">
 					<span id="fullname_l">${people.fullname}</span>
 
-					<button class="request-btn ${people.stt === 'pending' ? 'hidden' : ''}" title="Click to add friend" id="send_btn_${people.username}" onclick="handleSendFriendRequest(this,  'cancel_btn_${people.username}', '${people.username}')">
+					<button class="request-btn ${people.stt === 'pending' ? 'hidden' : ''}" title="Click to add friend" id="send_btn_${people.username}" onclick="handleSendFriendRequest(this,  'addfriend_message_${people.username}', '${people.username}')">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="16px" height="16px">
 							<path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM504 312l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" />
 						</svg>
 					</button>
-						
-					<button class="request-btn ${people.stt === 'pending' ? '' : 'hidden'}" id="cancel_btn_${people.username}" title="Click to cancel friend request" onclick="handleCancelFriendRequest(this, 'send_btn_${people.username}', '${people.username}')">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" width="16px" height="16px">
-							<path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304l91.4 0C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7L29.7 512C13.3 512 0 498.7 0 482.3zM472 200l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" />
-						</svg>
-					</button>
 				</div>
+				<span id="addfriend_message_${people.username}"></span>
 			</div>
 	`
+		}
 	});
 
 }
 
 const renderRequestCard = (senderInfor) => {
 
-	const listRequestAdd = document.getElementById('friend_request');
+	const listRequestAdd = document.getElementById('friend_request') ?? null;
+
+	if(!listRequestAdd) return;
 	
 	listRequestAdd.innerHTML += `				
-		<div id="${senderInfor.senderId}" class="user-request-card">
-			<img class="avt" src=" ${senderInfor.senderAvt ? atob(senderInfor.senderAvt) : '../asset/logo.webp'}" alt="user's avatar" width="50px" height="50px">
+		<div id="request_${senderInfor.senderId}" class="user-request-card">
+			<img class="avt" src="${senderInfor.senderAvt ? atob(senderInfor.senderAvt) : '../asset/logo.webp'}" alt="user's avatar" width="50px" height="50px">
 			<div id="title">
 				<span id="fullname_l">${senderInfor.senderFullname}</span>
 				<div class="group-request-btn">
 				
-					<button class="request-btn" title="Click to accept friend request" onclick="handleFriendRequest()">
+					<button class="request-btn" title="Click to accept friend request" onclick="handleFriendRequest('${senderInfor.senderId}')">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16px" height="16px">
 							<path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
 						</svg>
 					</button>
 				
-					<button class="request-btn" title="Click to reject friend request" onclick="handleFriendRequest(true)">
+					<button class="request-btn" title="Click to reject friend request" onclick="handleFriendRequest('${senderInfor.senderId}', true)">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"  width="16px" height="16px">
 							<path d="M367.2 412.5L99.5 144.8C77.1 176.1 64 214.5 64 256c0 106 86 192 192 192c41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3C434.9 335.9 448 297.5 448 256c0-106-86-192-192-192c-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0A256 256 0 1 1 0 256z" />
 						</svg>
 					</button>
 				</div>
 			</div>
-			<span id="request_message"></span>
 		</div>
 	`
 }

@@ -40,6 +40,18 @@ class FriendController {
 		$this->util->sendData(true,'handling friend request successfully');
 	}
 
+	public function handle_friend_response(){
+		
+		$input = json_decode(file_get_contents('php://input'), true);
+		$receiver =  $_SESSION['username'] ?? null;
+
+		$result =  $this->friendModel->handle_friend_request($input['sender'], $receiver, $input['stt']);
+
+		if(!$result) $this->util->sendData(false, 'Failed to handle friend response');
+
+		$this->util->sendData(true,'handling friend response successfully');
+	}
+
 	public function get_list_send_add(){
 		$username =  $_SESSION['username'] ?? null;
 

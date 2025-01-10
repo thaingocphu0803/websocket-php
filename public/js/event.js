@@ -121,9 +121,8 @@ const renderPreviewImage = (event, arrayItem) => {
 // delete preview upload image
 const deleteUploadImage = (id) => {
 	const imageUploadContainer = document.getElementById(id);
-	if (imageUploadContainer) {
-		imageUploadContainer.remove();
-	}
+
+		imageUploadContainer && imageUploadContainer.remove();
 
 	const inputFiles = document.getElementById('inbox_image');
 	const images = Array.from(inputFiles.files);
