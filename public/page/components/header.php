@@ -35,7 +35,7 @@ if($authInfor){
 
 		<!-- start-dropdown-btn -->
 		<div id="dropdown_btn" onclick="handleDropdown()">
-			<img src="<?= $authInfor->avatar ? base64_decode($authInfor->avatar) : "../../asset/logo.webp" ?>" alt="user's avatar" class="avt" width="50px" height="50px">
+			<img src="<?= $authInfor->avatar ? base64_decode($authInfor->avatar) : "../../asset/logo.webp" ?>" alt="user's avatar" class="avt" id="header_avt" width="50px" height="50px">
 			<div id="fullname"><?= $authInfor->fullname ?></div>
 			<span id="username" class="hidden"><?= $authInfor->username ?></span>
 			<svg id="icon-up" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20px" height="20px">

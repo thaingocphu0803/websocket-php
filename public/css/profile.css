@@ -14,6 +14,7 @@
 	border-radius: 50%;
 	border: var(--solid-2) var(--rgb-dark-green);
 	outline: var(--solid-2) var(--rgb-dark-green);
+	cursor: pointer;
 }
 
 #my_avatar:hover{

@@ -53,12 +53,13 @@ class UserModel
 
 	public function get_list_user($username)
 	{
-		$stmt = $this->db->query("SELECT u.username as partner_username, u.fullname as partner_fullname, c.is_online as isOnline, a.avatar as partner_avt
-								FROM users u
-								LEFT JOIN user_avatar a ON u.username = a.username
-								JOIN user_connection c ON u.username = c.username
-								JOIN friends f ON (f.user1 = u.username OR f.user2 = u.username)
-								WHERE u.username != :username AND f.stt = 'A' ", [
+			$stmt = $this->db->query("SELECT u.username as partner_username, u.fullname as partner_fullname, c.is_online as isOnline, a.avatar as partner_avt
+									FROM users u
+									LEFT JOIN user_avatar a ON u.username = a.username
+									JOIN user_connection c ON u.username = c.username
+									JOIN friends f 	ON (f.user1 = u.username OR f.user2 = u.username)
+													AND (f.user1 =:username OR f.user2 =:username)
+									WHERE u.username != :username", [
 			':username' => $username
 		]);
 

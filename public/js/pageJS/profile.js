@@ -232,7 +232,7 @@ const handleUploadAvatar = async () => {
 	if(data.status){
 
 		document.getElementById('my_avatar').src = atob(data.data.avatarUrl);
-		document.getElementById('avt').src = atob(data.data.avatarUrl);
+		document.getElementById('header_avt').src = atob(data.data.avatarUrl);
 		
 		showSuccess(data.message);
 	}else{
