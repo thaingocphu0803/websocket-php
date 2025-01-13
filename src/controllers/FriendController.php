@@ -22,6 +22,7 @@ class FriendController {
 
 		$result =  $this->friendModel->search_people($username, $input['key']);
 
+
 		if(!$result) $this->util->sendData(false, 'Failed to search people');
 
 		$this->util->sendData(true,'Searching people successfully', ['listPeople' => $result]);

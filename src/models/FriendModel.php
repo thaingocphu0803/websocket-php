@@ -15,24 +15,21 @@ class FriendModel
 	public function search_people($username, $key)
 	{
 		$stmt = $this->db->query(
-			"SELECT u.username, u.fullname, a.avatar, fr.stt 
-								FROM users u
-								
-								LEFT JOIN user_avatar a 
-								ON u.username = a.username
-								
-								LEFT JOIN friend_request fr 
-								ON (fr.receiver = u.username OR fr.sender = u.username)
-								AND (fr.receiver = :username OR fr.sender = :username)
-								AND fr.stt != 'accepted'
-								
-								LEFT JOIN friends f 
-								ON ( u.username = f.user1 OR u.username = f.user2) 
-								AND (f.user1 = :username OR f.user2 = :username)
-								
-								WHERE u.username != :username 
-								AND u.fullname LIKE :q 
-								AND (f.stt IS NULL OR f.stt != 'A')",
+			"SELECT u.username, u.fullname, a.avatar FROM users u
+				LEFT JOIN user_avatar a ON u.username = a.username
+				WHERE u.username != :username
+				AND u.fullname LIKE :q
+				AND NOT EXISTS (
+								SELECT 1 FROM friend_request fr
+								WHERE (fr.sender = u.username AND fr.receiver = :username)
+								OR (fr.sender = :username AND fr.receiver = u.username)
+							)
+				AND NOT EXISTS (
+								SELECT 1 FROM friends f
+								WHERE (f.user1 = u.username AND f.user2 = :username)
+								OR (f.user1 = :username AND f.user2 = u.username)
+							)
+			",
 			[
 				':username' => $username,
 				':q' => "%$key%"
@@ -48,76 +45,80 @@ class FriendModel
 
 	public function handle_friend_request($sender, $receiver, $stt)
 	{
-		$stmt1 = $this->db->query("SELECT sender, receiver, stt FROM friend_request WHERE sender = :sender AND receiver = :receiver LIMIT 1", [
+		switch ($stt) {
+			case 'accepted':
+				$result = $this->delete_friend_request($sender, $receiver);
+
+				if ($result) {
+					return $this->add_friend_connect($sender, $receiver);
+				} else {
+					return false;
+				}
+				break;
+			case 'rejected':
+				return $this->delete_friend_request($sender, $receiver);
+				break;
+			case 'pending':
+				return $this->add_friend_request($sender, $receiver);
+				break;
+			default:
+				return false;
+				break;
+		}
+	}
+
+	public function add_friend_request($sender, $receiver)
+	{
+		$stmt = $this->db->query("INSERT INTO friend_request (sender, receiver, created_at) VALUES(:sender, :receiver, CURRENT_TIMESTAMP)", [
 			':sender' => $sender,
-			':receiver' => $receiver
+			':receiver' => $receiver,
 		]);
 
-		$friend_request = $this->db->fetch($stmt1);
-
-		if (!$friend_request) {
-
-			$stmt2 = $this->db->query("INSERT INTO friend_request (sender, receiver, stt, created_at) VALUES(:sender, :receiver, :stt, CURRENT_TIMESTAMP)", [
-				':sender' => $sender,
-				':receiver' => $receiver,
-				':stt' => $stt
-			]);
-		} else {
-
-			$stmt2 = $this->db->query("UPDATE friend_request SET stt = :stt , created_at = CURRENT_TIMESTAMP WHERE (sender = :sender AND receiver = :receiver)", [
-				':sender' => $sender,
-				':receiver' => $receiver,
-				':stt' => $stt
-			]);
-		}
-
-		if ($stt === 'accepted' && $stmt2->rowCount() > 0) {
-
-			return $this->handle_friend_connect($sender, $receiver, 'A');
-		}
-
-		return $stmt2->rowCount() > 0;
+		return $stmt->rowCount() > 0;
 	}
 
-
-	public function handle_friend_connect($sender, $receiver, $stt)
+	public function delete_friend_request($sender, $receiver)
 	{
-		$stmt1 = $this->db->query(
-			"SELECT 1 FROM friends WHERE LEAST(:sender, :receiver) = user1 
-		AND GREATEST(:sender, :receiver) = user2",
-			[
-				':sender' => $sender,
-				':receiver' => $receiver,
-			]
-		);
+		$stmt = $this->db->query("DELETE FROM friend_request WHERE sender = :sender AND receiver = :receiver", [
+			':sender' => $sender,
+			':receiver' => $receiver,
+		]);
 
-		$check_friend_connect = $this->db->fetch($stmt1);
-
-		if (!$check_friend_connect) {
-			$stmt2 = $this->db->query("INSERT INTO friends (user1, user2, stt) 
-			VALUES(LEAST(:sender, :receiver),
-			GREATEST(:sender, :receiver), :stt)", [
-				':sender' => $sender,
-				':receiver' => $receiver,
-				':stt' => $stt
-			]);
-		} else {
-			$stmt2 = $this->db->query("UPDATE friends SET stt = :stt WHERE LEAST(:sender, :receiver) = user1 
-		AND GREATEST(:sender, :receiver) = user2", [
-				':sender' => $sender,
-				':receiver' => $receiver,
-				':stt' => $stt
-			]);
-		}
-
-		return $stmt2->rowCount() > 0;
+		return $stmt->rowCount() > 0;
 	}
+
+	public function add_friend_connect($sender, $receiver)
+	{
+
+		$stmt = $this->db->query("INSERT INTO friends (user1, user2, created_at) 
+			VALUES(LEAST(:sender, :receiver),
+			GREATEST(:sender, :receiver), CURRENT_TIMESTAMP)", [
+			':sender' => $sender,
+			':receiver' => $receiver,
+		]);
+
+		return $stmt->rowCount() > 0;
+	}
+
+
+	public function delete_friend_connect($sender, $receiver)
+	{
+
+		$stmt = $this->db->query("DELETE FROM friends 
+			WHERE (LEAST(:sender, :receiver) AND GREATEST(:sender, :receiver)", [
+			':sender' => $sender,
+			':receiver' => $receiver,
+		]);
+
+		return $stmt->rowCount() > 0;
+	}
+
 
 	public function get_list_send_add($username)
 	{
 		$stmt = $this->db->query("SELECT u.username, u.fullname, a.avatar FROM users u
 								LEFT JOIN user_avatar a ON u.username = a.username
-								JOIN friend_request fr ON ( fr.receiver = u.username AND fr.stt = 'pending')
+								JOIN friend_request fr ON ( fr.receiver = u.username)
 								WHERE fr.sender = :username", [
 			':username' => $username
 		]);
@@ -133,7 +134,7 @@ class FriendModel
 	{
 		$stmt = $this->db->query("SELECT u.username as senderId, u.fullname as senderFullname, a.avatar as senderAvt FROM users u
 								LEFT JOIN user_avatar a ON u.username = a.username
-								JOIN friend_request fr ON (fr.sender = u.username AND fr.stt = 'pending')
+								JOIN friend_request fr ON (fr.sender = u.username)
 								WHERE fr.receiver = :username", [
 			':username' => $username
 		]);
@@ -148,7 +149,7 @@ class FriendModel
 
 	public function get_count_friend_request($username)
 	{
-		$stmt = $this->db->query("SELECT COUNT(stt) as number_request FROM friend_request WHERE receiver = :username AND stt = 'pending' ", [
+		$stmt = $this->db->query("SELECT COUNT(sender) as number_request FROM friend_request WHERE receiver = :username", [
 			':username' => $username
 		]);
 
