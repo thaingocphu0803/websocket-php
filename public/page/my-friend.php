@@ -27,14 +27,7 @@
 		<!-- start list friend -->
 		<div class="list_friend">
 			<h2 id="title_list_friend">List Friend</h2>
-			<div id="list_content">
-				<div id="friend_card">
-					<img id="friend_avt" src="../asset/logo.webp" alt="friend avatar" width="180px" height="180px">
-					<p id="friend_name">Thai Phu</p>
-					<button id="delete_friend" onclick="handleSendFriendRequest(this, `add_friend`)" class="request-btn">Delete Friend</button>
-					<button id="add_friend" onclick="handleSendFriendRequest(this, `delete_friend`)" class="request-btn hidden">Add Friend</button>
-				</div>
-			</div>
+			<div id="list_content"></div>
 		</div>
 		<!-- start list friend -->
 	</div>

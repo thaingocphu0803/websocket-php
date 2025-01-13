@@ -109,6 +109,12 @@ switch ($router->path) {
 	case 'list-add-request':
 		$router->friend->get_list_add_request();
 		break;
+	case 'list-friend':
+		$router->friend->get_list_fiend();
+		break;
+	case 'delete-friend':
+		$router->friend->handle_delete_friend();
+		break;
 	case 'get-count-friend-request':
 		$router->friend->get_count_friend_request();
 		break;

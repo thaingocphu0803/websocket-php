@@ -62,4 +62,25 @@ class RoomModel{
 
 		return $result;
 	}
+
+	public function check_room_status_by_room($room){
+		$stmt = $this->db->query("SELECT 1 FROM rooms WHERE room = :room LIMIT 1", [
+			':room' => $room,
+		]);
+
+		$result = $this->db->fetch($stmt);
+
+		if(!$result) return false;
+
+		return $result;
+	}
+
+	public function update_room_status_by_room($room, $stt){
+		$stmt = $this->db->query("UPDATE rooms SET stt = :stt , updated_at = CURRENT_TIMESTAMP WHERE room = :room", [
+			':room' => $room,
+			':stt' => $stt,
+		]);
+
+		return $stmt->rowCount() > 0;
+	}
 }

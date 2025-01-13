@@ -149,7 +149,7 @@
 	overflow-y: auto;
 }
 
-#friend_card{
+.friend_card{
 	width: fit-content;
 	height: fit-content;
 	display: flex;
@@ -163,7 +163,7 @@
 
 }
 
-#friend_card:hover{
+.friend_card:hover{
 	border: var(--solid-2) var(--rgb-blue);
 }
 

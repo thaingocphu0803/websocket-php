@@ -53,6 +53,18 @@ class FriendController {
 		$this->util->sendData(true,'handling friend response successfully');
 	}
 
+	public function handle_delete_friend(){
+		
+		$input = json_decode(file_get_contents('php://input'), true);
+		$myUsername =  $_SESSION['username'] ?? null;
+
+		$result =  $this->friendModel->delete_friend_connect($myUsername, $input['friendUsername']);
+
+		if(!$result) $this->util->sendData(false, 'Failed to delete friend');
+
+		$this->util->sendData(true,'deleteing friend successfully');
+	}
+
 	public function get_list_send_add(){
 		$username =  $_SESSION['username'] ?? null;
 
@@ -83,6 +95,16 @@ class FriendController {
 		if(!$result) $this->util->sendData(false, 'Failed to get number friend request');
 
 		$this->util->sendData(true,'geting number friend request successfully', ['count' => $result['number_request']]);
+
+	}
+
+	public function get_list_fiend(){
+		$username =  $_SESSION['username'] ?? null;
+		$result =  $this->friendModel->get_list_friend($username);
+
+		if(!$result) $this->util->sendData(false, 'Failed to get list friend');
+
+		$this->util->sendData(true,'geting list friend successfully', ['listFriend' => $result]);
 
 	}
 }

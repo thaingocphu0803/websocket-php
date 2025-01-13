@@ -37,7 +37,7 @@ const renderList = (data) =>{
 	list.innerHTML = "";
 	data.forEach(item => {
 		list.innerHTML += `
-			<div id="${item.partner_username}" class="inbox-card" onclick="showInboxBox('${item.partner_fullname}', '${item.isOnline}', '${item.partner_username}'); resetNotification(this)">
+			<div id="item_${item.partner_username}" class="inbox-card" onclick="showInboxBox('${item.partner_fullname}', '${item.isOnline}', '${item.partner_username}'); resetNotification(this)">
 				<img class="avt" src="${item.partner_avt ? atob(item.partner_avt) : `../asset/logo.webp`}" alt="user's avatar" width="50px" height="50px">
 				<div id="title">
 					<span id="fullname_l">${item.partner_fullname}</span>

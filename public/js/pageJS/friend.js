@@ -143,8 +143,15 @@ const handleSendFriendRequest = async (sendFriendRequestBtn, id, peopleUsername)
 	if(!sendFriendRequestBtn.classList.contains('hidden')){
 		sendFriendRequestBtn.classList.add('hidden')
 	}
+	
+	const responseMessage = document.getElementById(id) ?? null;
 
-	document.getElementById(id).textContent = "Adding friend request have been sent";
+	console.log(responseMessage);
+
+	if(responseMessage){
+		responseMessage.textContent = "Adding friend request had been sent";
+	}
+
 	listSendAdd();
 }
 
@@ -260,29 +267,54 @@ const listAddRequest = async() => {
 	}
 }
 
-socket.onmessage = (event) => {
-	
-	const objMessage = JSON.parse(event.data);
-	const numberRequest = document.getElementById('number_invite');	
 
+const listFriend = async () =>{
+	try {
+		const response = await fetch(`/${endpoint}/list-friend`);
+		const data = await response.json();
 
-	if(objMessage.type === "sendFriendRequest"){
-		numberRequest.textContent = parseInt(numberRequest.textContent || 0) + 1;
+		if(!data.status) return;
 
-		if(numberRequest.classList.contains('hidden')){
-			numberRequest.classList.remove('hidden');
-		}
-	
-		renderRequestCard(objMessage)
+		renderFriendCard(data.data.listFriend);
 
-	}else if(objMessage.type === "cancelFriendRequest"){
-		const requestCard =  document.getElementById(`request_${objMessage.senderId}`)
-		requestCard && requestCard.remove();
-		numberRequest.textContent = parseInt(numberRequest.textContent || 0) - 1;
-		if(parseInt(numberRequest.textContent) === 0){
-			numberRequest.classList.add('hidden');
-		}
+	}catch(err){
+		console.log(err);
 	}
+}
+
+const handleDeleteFriend = async(DeleteFriendBtn, id, friendUsername) => {
+	const addFriendBtn = document.getElementById(id);
+	const from = document.getElementById("username").textContent;
+
+	try{
+		const response = await fetch(`/${endpoint}/delete-friend`,{
+			method:'post',
+			body: JSON.stringify({friendUsername})
+		});
+		const data = await response.json();
+		
+		if(!data.status) return;
+
+		const message = {
+			type: 'deleteFriend',
+			from,
+			to: friendUsername
+		}
+
+		socket.send(JSON.stringify(message));
+
+		if(!DeleteFriendBtn.classList.contains('hidden')){
+			DeleteFriendBtn.classList.add('hidden');
+		}
+	
+		if(addFriendBtn.classList.contains('hidden')){
+			addFriendBtn.classList.remove('hidden');
+	
+		}
+	}catch(err){
+		console.log(err);
+	}
+
 }
 
 
@@ -364,4 +396,59 @@ const renderRequestCard = (senderInfor) => {
 			</div>
 		</div>
 	`
+}
+
+const renderFriendCard = async(listFriend) =>{
+	const listFriendArray  = document.getElementById('list_content');
+
+	listFriendArray.innerHTML = "";
+	
+	listFriend.forEach(friend => {
+		
+		listFriendArray.innerHTML += `
+			<div class="friend_card" id="friend_${friend.username}">
+				<img id="friend_avt" src="${friend.avatar ? atob(friend.avatar) : "../asset/logo.webp"}" alt="friend avatar" width="180px" height="180px">
+				<p id="friend_name">${friend.fullname}</p>
+				<button id="delete_${friend.username}" onclick="handleDeleteFriend(this, 'add_${friend.username}', '${friend.username}')" class="request-btn">Delete Friend</button>
+				<button id="add_${friend.username}" onclick="handleSendFriendRequest(this, 'add_response_${friend.username}', '${friend.username}')" class="request-btn hidden">Add Friend</button>
+			</div>
+		`
+	});
+}
+
+
+socket.onmessage = (event) => {
+	
+	const objMessage = JSON.parse(event.data);
+	const numberRequest = document.getElementById('number_invite');	
+
+
+	if(objMessage.type === "sendFriendRequest"){
+		numberRequest.textContent = parseInt(numberRequest.textContent || 0) + 1;
+
+		if(numberRequest.classList.contains('hidden')){
+			numberRequest.classList.remove('hidden');
+		}
+	
+		renderRequestCard(objMessage)
+
+	}else if(objMessage.type === "cancelFriendRequest"){
+		const requestCard =  document.getElementById(`request_${objMessage.senderId}`)
+		requestCard && requestCard.remove();
+		numberRequest.textContent = parseInt(numberRequest.textContent || 0) - 1;
+		if(parseInt(numberRequest.textContent) === 0){
+			numberRequest.classList.add('hidden');
+		}
+	}else if(objMessage.type === "deleteFriend"){
+		const friendCard =  document.getElementById(`friend_${objMessage.senderId}`) ?? null;
+		const itemPartner = document.getElementById(`item_${objMessage.senderId}`) ?? null
+
+		if(friendCard){
+			friendCard.remove();
+		}
+
+		if(itemPartner){
+			itemPartner.remove();
+		}
+	}
 }

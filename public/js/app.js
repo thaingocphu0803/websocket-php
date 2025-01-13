@@ -121,6 +121,7 @@ const Navigate = async (pathname) => {
 				listSendAdd();
 				listAddRequest();
 				fetchCountRequestAPI();
+				listFriend();
 			default:
 				break;
 		}

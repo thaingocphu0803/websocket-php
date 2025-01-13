@@ -161,7 +161,7 @@ class Chat implements MessageComponentInterface
 						$client->send(json_encode($sendMessage));
 					}
 				}
-		}else if($ojbMessage["type"] == "cancelFriendRequest"){
+		}else if($ojbMessage["type"] == "cancelFriendRequest" || $ojbMessage["type"] == "deleteFriend"){
 			$receiverId = $ojbMessage["to"];
 			$receiver = $this->userConnectionModel->get_user_connection($receiverId);
 
@@ -180,6 +180,7 @@ class Chat implements MessageComponentInterface
 					}
 				}
 		}
+		
 	}
 
 	public function onClose(ConnectionInterface $conn)

@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../database/DB.php';
-
+require_once __DIR__ . '/RoomModel.php';
 class FriendModel
 {
 
@@ -101,14 +101,29 @@ class FriendModel
 	}
 
 
-	public function delete_friend_connect($sender, $receiver)
+	public function delete_friend_connect($myUsername, $friendUsername)
 	{
-
 		$stmt = $this->db->query("DELETE FROM friends 
-			WHERE (LEAST(:sender, :receiver) AND GREATEST(:sender, :receiver)", [
-			':sender' => $sender,
-			':receiver' => $receiver,
+			WHERE (LEAST(user1, user2) = LEAST(:user1, :user2)) 
+			AND (GREATEST(user1, user2) = GREATEST(:user1, :user2)) ", 
+		[
+			':user1' => $myUsername,
+			':user2' => $friendUsername,
 		]);
+
+		if($stmt->rowCount() > 0){
+			$roomModel = new RoomModel();
+
+			$arr = [$myUsername, $friendUsername];
+			sort($arr);
+			$room = implode('_', $arr);
+
+			$check = $roomModel->check_room_status_by_room($room);
+
+			if($check){
+				return $roomModel->update_room_status_by_room($room, 'X');
+			}
+		}
 
 		return $stmt->rowCount() > 0;
 	}
@@ -159,4 +174,24 @@ class FriendModel
 
 		return 	$result;
 	}
+
+	public function get_list_friend($username)
+	{
+		$stmt = $this->db->query(" SELECT u.username, u.fullname, a.avatar FROM users u
+		LEFT JOIN user_avatar a ON u.username = a.username
+		JOIN friends f	ON (f.user1 = u.username AND f.user2 = :username)
+						OR (f.user1 = :username AND f.user2 = u.username)
+		WHERE u.username != :username",
+		[
+			':username' => $username
+		]);
+
+		$result = $this->db->fetch_all($stmt);
+
+		if (!$result) return false;
+
+		return 	$result;
+	}
+
+	
 }
