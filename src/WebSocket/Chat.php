@@ -48,8 +48,6 @@ class Chat implements MessageComponentInterface
 		$ojbMessage = json_decode($msg, true);
 		$connection_id = $from->resourceId;
 
-		echo $ojbMessage['type'];
-
 		if ($ojbMessage["type"] == 'userConnect') {
 			$userConnect = $ojbMessage["userConnect"] ?? null;
 			$result = $this->userConnectionModel->save_user_connection($userConnect, $connection_id, 1);
@@ -144,9 +142,6 @@ class Chat implements MessageComponentInterface
 				$sender = $this->userModel->check_authen($senderId);
 				$receiver = $this->userConnectionModel->get_user_connection($receiverId);
 
-				var_dump($receiver);
-
-
 				if(!$receiver || !$sender) die();
 
 				foreach ($this->clients as $client) {
@@ -161,7 +156,10 @@ class Chat implements MessageComponentInterface
 						$client->send(json_encode($sendMessage));
 					}
 				}
-		}else if($ojbMessage["type"] == "cancelFriendRequest" || $ojbMessage["type"] == "deleteFriend"){
+		}else if($ojbMessage["type"] == "cancelFriendRequest" 
+					|| $ojbMessage["type"] == "deleteFriend" 
+					|| $ojbMessage["type"] == "accepted"
+					|| $ojbMessage["type"] == "rejected"){
 			$receiverId = $ojbMessage["to"];
 			$receiver = $this->userConnectionModel->get_user_connection($receiverId);
 

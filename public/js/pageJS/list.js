@@ -14,7 +14,9 @@ const listApi= async()=>{
 		renderList (data.data.list);
 	
 	
-		const search = document.getElementById('search');
+		const search = document.getElementById('search') ?? null;
+
+		if(!search) return;
 		
 		search.addEventListener('input', ()=>{
 			const query = search.value.toLowerCase();
@@ -33,7 +35,10 @@ const listApi= async()=>{
 
 const renderList = (data) =>{
 
-	const list = document.getElementById('list_chat');
+	const list = document.getElementById('list_chat') ?? null;
+
+	if(!list) return; 
+
 	list.innerHTML = "";
 	data.forEach(item => {
 		list.innerHTML += `

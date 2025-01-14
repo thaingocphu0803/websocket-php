@@ -122,7 +122,7 @@ const renderMessage = (position, date, message = null, image = []) => {
 	if (image.length > 0) {
 		for (let i = 0; i < image.length; i++)
 			iboxComponent.innerHTML += `
-			<img class="image-${position}" src="${atob(image[i])}" alt="message image" width="150px" height="130px">
+			<img class="image-${position} thumnail" src="${atob(image[i])}" alt="message image" width="150px" height="130px"  onclick="handleViewImage(event)">
 		`;
 	}
 

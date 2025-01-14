@@ -45,24 +45,35 @@ const handleFriendRequest = async(senderUsername, reject = false) => {
 	const groupRequestBtn = document.getElementsByClassName('group-request-btn')[0];
 	const numberRequest = document.getElementById('number_invite');
 	const requestCard = document.getElementById(`request_${senderUsername}`)
+	const from = document.getElementById("username").textContent;
+
 	let formData = {}
+	let stt = null;
 
 	if(reject){
-		formData = {
-			sender: senderUsername,
-			stt: 'rejected'
-		}
-	
+		stt = 'rejected'
+
 	}else{
-		formData = {
-			sender: senderUsername,
-			stt: 'accepted'
-		}
+		stt = 'accepted'
 	}
+
+	formData = {
+		sender: senderUsername,
+		stt
+	}
+	
 
 	const data = await fetchFriendResponse(formData);
 
 	if(!data.status) return;
+
+	const message = {
+		type: stt,
+		from,
+		to: senderUsername
+	}
+
+	socket.send(JSON.stringify(message));
 
 	numberRequest.textContent = parseInt(numberRequest.textContent || 0) -1;
 
@@ -75,8 +86,6 @@ const handleFriendRequest = async(senderUsername, reject = false) => {
 	}
 
 	requestCard &&	requestCard.remove();
-
-
 	
 }
 
@@ -145,8 +154,6 @@ const handleSendFriendRequest = async (sendFriendRequestBtn, id, peopleUsername)
 	}
 	
 	const responseMessage = document.getElementById(id) ?? null;
-
-	console.log(responseMessage);
 
 	if(responseMessage){
 		responseMessage.textContent = "Adding friend request had been sent";
@@ -325,7 +332,7 @@ const renderReceiverRequest = (listReceiver) => {
 
 	listReceiver.forEach( (receiver, index) => {
 		listContent.innerHTML += `
-			<div id="" class="user-request-card">
+			<div id="send_request_${receiver.username}" class="user-request-card">
 				<img class="avt" src=" ${receiver.avatar ? atob(receiver.avatar) : '../asset/logo.webp'}" alt="user's avatar" width="50px" height="50px">
 				<div id="title">
 					<span id="fullname_l">${receiver.fullname}</span>
@@ -399,7 +406,9 @@ const renderRequestCard = (senderInfor) => {
 }
 
 const renderFriendCard = async(listFriend) =>{
-	const listFriendArray  = document.getElementById('list_content');
+	const listFriendArray  = document.getElementById('list_content') ?? null;
+
+	if(!listFriendArray) return;
 
 	listFriendArray.innerHTML = "";
 	
@@ -449,6 +458,24 @@ socket.onmessage = (event) => {
 
 		if(itemPartner){
 			itemPartner.remove();
+		}
+	}else if(objMessage.type === "accepted"){
+		listFriend();
+		listApi();
+	}else if(objMessage.type === 'rejected'){
+		const sentRequestCard = document.getElementById(`send_request_${objMessage.senderId}`) ?? null;
+		const sentRequestBtn = document.getElementById(`send_btn_${objMessage.senderId}`) ?? null;
+		const addFriendMessage = document.getElementById(`addfriend_message_${objMessage.senderId}`) ?? null;
+
+		if(sentRequestCard){
+			sentRequestCard.remove();
+		}
+
+		if(sentRequestBtn || addFriendMessage){
+			if(sentRequestBtn.classList.contains('hidden') && !addFriendMessage.classList.contains('hidden')){
+				addFriendMessage.classList.add('hidden');
+				sentRequestBtn.classList.remove('hidden');
+			}
 		}
 	}
 }
