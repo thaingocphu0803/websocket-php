@@ -106,7 +106,7 @@ const renderPreviewImage = (event, arrayItem) => {
 	const previewImage = document.getElementById("previewImage");
 	previewImage.innerHTML += `
 		<div id="${arrayItem.lastModified}" class="upload-image-container">
-			<img class="image-upload" src="${event.target.result}" alt="" width="150px" height="150px">
+			<img class="image-upload thumnail" src="${event.target.result}" alt="image send" width="150px" height="150px" onclick="handleViewImage(event)">
 			<span class="delete-btn" onclick="deleteUploadImage('${arrayItem.lastModified}')">
 				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16px" height="16px">
 					<path fill="#E00925"  d="M376.6 84.5c11.3-13.6 9.5-33.8-4.1-45.1s-33.8-9.5-45.1 4.1L192 206 56.6 43.5C45.3 29.9 25.1 28.1 11.5 39.4S-3.9 70.9 7.4 84.5L150.3 256 7.4 427.5c-11.3 13.6-9.5 33.8 4.1 45.1s33.8 9.5 45.1-4.1L192 306 327.4 468.5c11.3 13.6 31.5 15.4 45.1 4.1s15.4-31.5 4.1-45.1L233.7 256 376.6 84.5z" />
@@ -171,4 +171,25 @@ const showConfirmPlaySound = () => {
 	}, 1000)
 
 }
+
+const handleViewImage =  (event) => {
+const overlay = document.getElementById('overlay');
+const zoomedImg = document.getElementById('zoomed_img');
+
+
+  zoomedImg.src = event.target.src;
+  overlay.style.display = 'flex'; 
+};
+
+const closeViewImage = () => {
+	const overlay = document.getElementById('overlay');
+  overlay.style.display = 'none';
+};
+
+const closeOverlay = (event) => {
+	const overlay = document.getElementById('overlay');
+  if (event.target === overlay) {
+	overlay.style.display = 'none';
+  }
+};
 

@@ -66,4 +66,11 @@
 
 	<!-- end-main -->
 
+	<!-- star overlay -->
+	<div class="overlay" id="overlay" onclick="closeOverlay(event)">
+		<span class="close-btn" onclick="closeViewImage()">&times;</span>
+		<img id="zoomed_img" src="" alt="Zoomed Image" width="500px" height="500px">
+	</div>
+	<!-- end overlay -->
+
 </div>
