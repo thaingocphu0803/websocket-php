@@ -101,7 +101,7 @@ const Navigate = async (pathname) => {
 				app.innerHTML = template;
 				listApi();
 				fetchCountRequestAPI();
-				if (!window.localStorage.getItem("playSound"))
+				if (!window.sessionStorage.getItem("playSound"))
 					showConfirmPlaySound();
 
 				if (partner && Object.keys(partner).length > 0) {

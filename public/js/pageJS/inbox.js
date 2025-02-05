@@ -12,18 +12,18 @@ const sendMessage = async () => {
 
 	if (!text && imageArray.length === 0) return;
 
-
-	if(imageArray.length > 0){
+	if (imageArray.length > 0) {
 		for (let i = 0; i < imageArray.length; i++) {
 			formData.append(`images[]`, imageArray[i]);
 		}
-	}	
+	}
 
 	clearPreviewImage();
 	// clear input message after send
 	document.getElementById("input_message").value = "";
 
-	const listImage = imageArray.length > 0 ? await handleMessageImage(formData) : [];
+	const listImage =
+		imageArray.length > 0 ? await handleMessageImage(formData) : [];
 
 	let sendDate = getSendDate();
 
@@ -39,20 +39,21 @@ const sendMessage = async () => {
 	};
 
 	socket.send(JSON.stringify(message));
-	
+
 	renderMessage("right", sendDate, text, listImage);
 
 	// clear input file after sen
-	inputFiles.value = '';
-
+	inputFiles.value = "";
 };
 
 socket.onmessage = (event) => {
 	const objMessage = JSON.parse(event.data);
+
+	const numberRequest = document.getElementById("number_invite");
+
 	if (objMessage.type === "unRead") {
 		const notification = document
-			.getElementById(`${objMessage.sender}`)
-			.querySelector(".notify");
+			.getElementById(`noti_${objMessage.sender}`);
 
 		notification.textContent = parseInt(notification.textContent || 0) + 1;
 
@@ -66,8 +67,13 @@ socket.onmessage = (event) => {
 		currentRoom = [from, to].sort().join("_");
 
 		if (objMessage.room === currentRoom) {
-			renderMessage("left", objMessage.date, objMessage.message, objMessage.listImage);
-				playNotification();
+			renderMessage(
+				"left",
+				objMessage.date,
+				objMessage.message,
+				objMessage.listImage
+			);
+			playNotification();
 		}
 	} else if (objMessage.type === "userConnect" && objMessage.isOnline === 1) {
 		const userStatus = getUserStatus(objMessage.username);
@@ -82,6 +88,65 @@ socket.onmessage = (event) => {
 		if (!userStatus) return;
 		userStatus.textContent = "";
 		currentOnline = objMessage.isOnline;
+	} else if (objMessage.type === "sendFriendRequest") {
+		numberRequest.textContent =
+			parseInt(numberRequest.textContent || 0) + 1;
+
+		if (numberRequest.classList.contains("hidden")) {
+			numberRequest.classList.remove("hidden");
+		}
+
+		renderRequestCard(objMessage);
+	} else if (objMessage.type === "cancelFriendRequest") {
+		const requestCard = document.getElementById(
+			`request_${objMessage.senderId}`
+		);
+		requestCard && requestCard.remove();
+		numberRequest.textContent =
+			parseInt(numberRequest.textContent || 0) - 1;
+		if (parseInt(numberRequest.textContent) === 0) {
+			numberRequest.classList.add("hidden");
+		}
+	} else if (objMessage.type === "deleteFriend") {
+		const friendCard =
+			document.getElementById(`friend_${objMessage.senderId}`) ?? null;
+		const itemPartner =
+			document.getElementById(`item_${objMessage.senderId}`) ?? null;
+
+		if (friendCard) {
+			friendCard.remove();
+		}
+
+		if (itemPartner) {
+			itemPartner.remove();
+		}
+	} else if (objMessage.type === "accepted") {
+		listFriend();
+		listApi();
+	} else if (objMessage.type === "rejected") {
+		const sentRequestCard =
+			document.getElementById(`send_request_${objMessage.senderId}`) ??
+			null;
+		const sentRequestBtn =
+			document.getElementById(`send_btn_${objMessage.senderId}`) ?? null;
+		const addFriendMessage =
+			document.getElementById(
+				`addfriend_message_${objMessage.senderId}`
+			) ?? null;
+
+		if (sentRequestCard) {
+			sentRequestCard.remove();
+		}
+
+		if (sentRequestBtn || addFriendMessage) {
+			if (
+				sentRequestBtn.classList.contains("hidden") &&
+				!addFriendMessage.classList.contains("hidden")
+			) {
+				addFriendMessage.classList.add("hidden");
+				sentRequestBtn.classList.remove("hidden");
+			}
+		}
 	}
 };
 
@@ -122,7 +187,9 @@ const renderMessage = (position, date, message = null, image = []) => {
 	if (image.length > 0) {
 		for (let i = 0; i < image.length; i++)
 			iboxComponent.innerHTML += `
-			<img class="image-${position} thumnail" src="${atob(image[i])}" alt="message image" width="150px" height="130px"  onclick="handleViewImage(event)">
+			<img class="image-${position} thumnail" src="${atob(
+				image[i]
+			)}" alt="message image" width="150px" height="130px"  onclick="handleViewImage(event)">
 		`;
 	}
 
@@ -205,11 +272,15 @@ const renderListMessage = async (room, from) => {
 		if (!data.status) return;
 
 		data.data.listMessage.forEach((message) => {
-
-				let img_url = message.img_urls ? message.img_urls.split(',') : [];
+			let img_url = message.img_urls ? message.img_urls.split(",") : [];
 
 			if (message.sender === from) {
-				renderMessage("right", message.create_at, message.mssg, img_url);
+				renderMessage(
+					"right",
+					message.create_at,
+					message.mssg,
+					img_url
+				);
 			} else {
 				renderMessage("left", message.create_at, message.mssg, img_url);
 			}
@@ -258,7 +329,6 @@ const resetNotification = (element) => {
 };
 
 const handleMessageImage = async (formData) => {
-
 	try {
 		const response = await fetch(`/${endpoint}/upload-message-images`, {
 			method: "post",
@@ -267,7 +337,7 @@ const handleMessageImage = async (formData) => {
 
 		const data = await response.json();
 
-		if(!data) return
+		if (!data) return;
 
 		return data.data.listImage;
 	} catch (err) {

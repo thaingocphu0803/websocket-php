@@ -139,8 +139,10 @@ const clearPreviewImage = () => {
 }
 
 const playNotification = () => {
-	
-	if(window.localStorage.getItem('playSound') === true){
+	console.log("hello");
+
+	if(window.sessionStorage.getItem('playSound') == 1){
+		console.log("hello2");
 		const audio = document.getElementById("notify_sound");
 		audio.play();	
 	}
@@ -166,7 +168,7 @@ const showConfirmPlaySound = () => {
 		}
 	
 		document.getElementById('yes').addEventListener('click', ()=> {
-			window.localStorage.setItem('playSound', true)
+			window.sessionStorage.setItem('playSound', 1)
 		})
 	}, 1000)
 
